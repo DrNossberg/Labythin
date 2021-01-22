@@ -1,0 +1,7 @@
+/**
+ * Labythin
+ */
+public class Labythin {
+
+    
+}
