@@ -32,7 +32,7 @@ public class Labythin {
         this.lab[(int) node.getY()][(int) node.getX()][0] = 1;
     }
 
-    public void printLab() {
+    public String printLab() {
         String res = "";
 
 
@@ -43,7 +43,7 @@ public class Labythin {
             res += ("\n");
         }
 
-        System.out.println(res);
+        return (res);
     }
 
     /**
