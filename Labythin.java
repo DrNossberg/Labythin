@@ -28,8 +28,8 @@ public class Labythin {
      * @param x coordinate
      * @param y coordinate
      */
-    public void changeToPath(int x, int y) {
-        this.lab[y][x][0] = 1;
+    public void changeToPath(Point2D node) {
+        this.lab[(int) node.getY()][(int) node.getX()][0] = 1;
     }
 
     public void printLab() {
@@ -46,29 +46,37 @@ public class Labythin {
         System.out.println(res);
     }
 
-
+    /**
+     * Select a random unvisited neighbor of the active Node
+     * @param visitedNodes array of already visited nodes
+     * @param activeNode
+     * @return random neighbor (takes into account if none exists)
+     */
     public Point2D randomNeighbor(ArrayList<Point2D> visitedNodes, Point2D activeNode) {
         Random r = new Random();
         Point2D res;
+
         // create an array with all unvisited neighbors
         ArrayList<Point2D> unvisitedNeighbors = new ArrayList<>();
         double x = activeNode.getX();
         double y = activeNode.getY();
 
-        if (x != .0 && !visitedNodes.contains(new Point2D.Double(x-1, y)))
+        // fill array of unvisited neighbors with existing nodes
+        if (x != 0 && !visitedNodes.contains(new Point2D.Double(x-1, y)))
             unvisitedNeighbors.add(new Point2D.Double(x-1, y));
 
-        if (x != this.width && !visitedNodes.contains(new Point2D.Double(x+1, y)))
+        if (x != this.width-1 && !visitedNodes.contains(new Point2D.Double(x+1, y)))
             unvisitedNeighbors.add(new Point2D.Double(x+1,y));
 
-        if (y != .0 && !visitedNodes.contains(new Point2D.Double(x, y-1)))
+        if (y != 0 && !visitedNodes.contains(new Point2D.Double(x, y-1)))
             unvisitedNeighbors.add(new Point2D.Double(x, y-1));
 
-        if (y != this.height && !visitedNodes.contains(new Point2D.Double(x, y+1)))
+        if (y != this.height-1 && !visitedNodes.contains(new Point2D.Double(x, y+1)))
             unvisitedNeighbors.add(new Point2D.Double(x, y+1));
             
 
-        if (unvisitedNeighbors.size() > 0)   
+        // define selected unvisited neighbor ((-1,-1) if none exists)
+        if (unvisitedNeighbors.size() > 0)
             res = unvisitedNeighbors.get(r.nextInt(unvisitedNeighbors.size()));
         else
             res = new Point2D.Double(-1,-1);
@@ -76,6 +84,8 @@ public class Labythin {
         return res;
     }
 
+    //#region getter
     public int getWidth() { return this.width; }
     public int getHeight() { return this.height; }
+    //#endregion
 }
