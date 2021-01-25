@@ -19,13 +19,13 @@ public class Main {
     /**
      * 
      * @param lab
-     * @param heuristic
+     * @param mode
      *      1: Recursive Backtracker (newest)
      *      2: Prism (random)
      *      3: oldest
      *      4: 50/50
      */
-    public static String MazeGenerator(Labythin lab, int heuristic) {
+    public static String MazeGenerator(Labythin lab, int mode) {
         Random r = new Random();
         ArrayList<Point2D> activeSet = new ArrayList<>();
         ArrayList<Point2D> visitedNodes = new ArrayList<>();
@@ -46,7 +46,7 @@ public class Main {
         // Run the maze generation
         while (!activeSet.isEmpty()) {
             // Select node from active set
-            switch (heuristic) {
+            switch (mode) {
                 case 1:
                     activeNode = activeSet.get(activeSet.size()-1);
                     break;
@@ -57,13 +57,13 @@ public class Main {
                     activeNode = activeSet.get(0);
                     break;
                 case 4:
-                    if (Math.random() > 1) 
+                    if (Math.random() > 0.5) 
                         activeNode = activeSet.get(activeSet.size()-1);
                     else
                         activeNode = activeSet.get(r.nextInt(activeSet.size()));
                     break;
                 default:
-                    System.out.println("Unknown heuristic method");
+                    System.out.println("Unknown mode");
                     break;
             }
     
