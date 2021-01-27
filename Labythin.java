@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Random;
 import java.awt.geom.*;
 
 public class Labythin {
@@ -52,35 +51,37 @@ public class Labythin {
      * @return random neighbor (takes into account if none exists)
      */
     public Point2D randomNeighbor(ArrayList<Point2D> visitedNodes, Point2D activeNode) {
-        Random r = new Random();
         Point2D res;
+        ArrayList<Point2D> unvisitedNeighbors = this.findUnvisitedNeighbors(visitedNodes, activeNode);
+        // define selected unvisited neighbor
+        if (unvisitedNeighbors.size() > 0)
+            res = unvisitedNeighbors.get(Main.R.nextInt(unvisitedNeighbors.size()));
+        else // none exists
+            res = new Point2D.Double(Main.DEFAULT_NODE,Main.DEFAULT_NODE);
+        
+        return res;
+    }
 
+    private ArrayList<Point2D> findUnvisitedNeighbors(ArrayList<Point2D> visitedNodes, Point2D activeNode) {
         // create an array with all unvisited neighbors
         ArrayList<Point2D> unvisitedNeighbors = new ArrayList<>();
         double x = activeNode.getX();
         double y = activeNode.getY();
 
         // fill array of unvisited neighbors with existing nodes
-        if (x != 0 && !visitedNodes.contains(new Point2D.Double(x-1, y)))
-            unvisitedNeighbors.add(new Point2D.Double(x-1, y));
+        if (x > 0 && !visitedNodes.contains(new Point2D.Double(x-2, y))) // x = 0 -> left border
+            unvisitedNeighbors.add(new Point2D.Double(x-2, y));
 
-        if (x != this.width-1 && !visitedNodes.contains(new Point2D.Double(x+1, y)))
-            unvisitedNeighbors.add(new Point2D.Double(x+1,y));
+        if (x < this.width-1 && !visitedNodes.contains(new Point2D.Double(x+2, y))) // x = width-1 -> right border
+            unvisitedNeighbors.add(new Point2D.Double(x+2,y));
 
-        if (y != 0 && !visitedNodes.contains(new Point2D.Double(x, y-1)))
-            unvisitedNeighbors.add(new Point2D.Double(x, y-1));
+        if (y > 0 && !visitedNodes.contains(new Point2D.Double(x, y-2))) // y = 0 -> top border
+            unvisitedNeighbors.add(new Point2D.Double(x, y-2));
 
-        if (y != this.height-1 && !visitedNodes.contains(new Point2D.Double(x, y+1)))
-            unvisitedNeighbors.add(new Point2D.Double(x, y+1));
-            
+        if (y < this.height-1 && !visitedNodes.contains(new Point2D.Double(x, y+2))) // y = height-1 -> bottom border
+            unvisitedNeighbors.add(new Point2D.Double(x, y+2));
 
-        // define selected unvisited neighbor ((-1,-1) if none exists)
-        if (unvisitedNeighbors.size() > 0)
-            res = unvisitedNeighbors.get(r.nextInt(unvisitedNeighbors.size()));
-        else
-            res = new Point2D.Double(-1,-1);
-        
-        return res;
+        return (unvisitedNeighbors);
     }
 
     //#region getter
