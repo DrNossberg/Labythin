@@ -19,10 +19,10 @@ public class Main {
     // arrayList.add() -> append to the end of the list
     public static void main(String[] args) throws Exception {
         // java Main width height
-        int width = 10;//Integer.parseInt(args[0]);
-        int height = 10;//Integer.parseInt(args[1]);
+        int width = Integer.parseInt(args[0]);
+        int height = Integer.parseInt(args[1]);
         // Create labyrinth filled with only walls
-        Labythin lab = new Labythin(width, height);
+        Maze lab = new Maze(width, height);
 
         // Run the maze generator
         System.out.println(MazeGenerator(lab, 1));
@@ -35,7 +35,7 @@ public class Main {
      *             50/50
      * @throws Exception
      */
-    public static String MazeGenerator(Labythin lab, int mode) throws Exception {
+    public static String MazeGenerator(Maze lab, int mode) throws Exception {
         
         ArrayList<Point2D> activeSet = new ArrayList<>();
         ArrayList<Point2D> visitedNodes = new ArrayList<>();
@@ -51,7 +51,6 @@ public class Main {
         // Choose first activeNode
         activeNode = new Point2D.Double(0,0);
         activeSet.add(activeNode);
-        visitedNodes.add(activeNode);
         lab.changeToPath(activeNode);
 
         // Run the maze generation
@@ -76,6 +75,8 @@ public class Main {
                 default:
                     throw new Exception("Unknown mode");
             }
+            if (!visitedNodes.contains(activeNode))
+                visitedNodes.add(activeNode);
 
             // Choose a random neighbor node, if none available remove active node from active set
             neighbor = lab.randomNeighbor(visitedNodes, activeNode);
@@ -98,17 +99,12 @@ public class Main {
             // }
 
 
-            /**
-             * Du coup j'ai fait ça, mais ça marchait pas (tourne à l'infini)
-             * Quand le actineNode est à 1 du bord, au lieu de prendre en diagonale et prendre 
-             * le milieu (ce qui serait chiant), je partais sur prendre juste celui sur le bord
-             * Et le problème c'est sûrement que du coup les nodes "fictifs" ne sont pas stockés dans les visited nodes
-             * donc j'ai essayé de le faire mais ça me met full points
-             */
             if (neighbor.getX() == Main.DEFAULT_NODE && neighbor.getY() == Main.DEFAULT_NODE) { // no neighbor
                 activeSet.remove(activeNode);
             } else {
-                visitedNodes.add(neighbor); // j'ai essayé d'ajouter le fictif dans le visite nodes ici
+                //visitedNodes.add(neighbor); // j'ai essayé d'ajouter le fictif dans le visite nodes ici
+                if (!visitedNodes.contains(neighbor))
+                    visitedNodes.add(neighbor);
                 if (neighbor.getX() < 0)
                     neighbor = new Point2D.Double(0, neighbor.getY());
                 else if (neighbor.getX() > lab.getWidth()-1)
@@ -119,16 +115,19 @@ public class Main {
                     neighbor = new Point2D.Double(neighbor.getX(), lab.getHeight()-1);
                 else {
                     // inbetween node
-                    lab.changeToPath(new Point2D.Double(
+                    Point2D inBetweenNode = new Point2D.Double(
                         (activeNode.getX() + neighbor.getX()) / 2,
                         (activeNode.getY() + neighbor.getY()) / 2
-                    ));
+                    );
+                    lab.changeToPath(inBetweenNode);
+                    visitedNodes.add(inBetweenNode);
+                    activeSet.add(neighbor);
                 }
 
                 // neighbor
                 lab.changeToPath(neighbor);
-                activeSet.add(neighbor);
-                //visitedNodes.add(neighbor);
+                if (!visitedNodes.contains(neighbor))
+                    visitedNodes.add(neighbor);
             }
 
         }
