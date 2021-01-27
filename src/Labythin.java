@@ -15,7 +15,7 @@ import java.awt.geom.*;
 
 public class Labythin {
     private int width, height;
-    int [][][] lab; // y, x, s (-1 for wall and 1 for path)
+    char[][] lab; // '#' for wall and '.' for path
 
     /**
      * Create new Labythin object with given width and height and full of walls
@@ -25,22 +25,21 @@ public class Labythin {
         this.height = height;
 
         // Initialization of the labyrinth
-        this.lab = new int[this.height][this.width][1];
+        this.lab = new char[this.height][this.width];
 
         for (int y = 0; y < this.height; y++) { // row by row
             for (int x = 0; x < this.width; x++) { // column by column
-                lab[y][x][0] = -1;
+                lab[y][x] = '#';
             }
         }
     }
 
     /**
      * Change a slot from wall to path
-     * @param x coordinate
-     * @param y coordinate
+     * @param node
      */
     public void changeToPath(Point2D node) {
-        this.lab[(int) node.getY()][(int) node.getX()][0] = 1;
+        this.lab[(int) node.getY()][(int) node.getX()] = '.';
     }
 
     public String printLab() {
@@ -49,7 +48,7 @@ public class Labythin {
 
         for (int y = 0; y < this.height; y++) { // row by row
             for (int x = 0; x < this.width; x++) { // column by column
-                res += (this.lab[y][x][0] == -1) ? "#" : "."; 
+                res += this.lab[y][x]; 
             }
             res += ("\n");
         }
