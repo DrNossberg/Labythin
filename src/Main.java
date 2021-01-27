@@ -1,3 +1,14 @@
+/*
+** IUT Nancy-Charlemagne, 2021
+** Projet :
+**    Labythin
+** Author :
+**    Erin      Bernardoni
+**    Antoine   Orion
+** File description :
+**    ceci est principalement là pour que t'ai un merge :P
+*/
+
 import java.util.ArrayList;
 import java.util.Random;
 import java.awt.geom.*;
@@ -16,7 +27,7 @@ public class Main {
         // Run the maze generator
         System.out.println(MazeGenerator(lab, 1));
     }
-
+        
     /**
      * 
      * @param lab
@@ -31,7 +42,8 @@ public class Main {
         Point2D activeNode, neighbor;
 
         // 1. Randomly select a cell and add it to the selected cells list.
-        // 2.Select a cell from the selected cells list. Then choose a cell adjacent to it that hasn’t been visited. Add the adjacent cell to the selected list and remove the edge between the two cells.
+        // 2.Select a cell from the selected cells list. Then choose a cell adjacent to it that hasn’t been visited. 
+        //Add the adjacent cell to the selected list and remove the edge between the two cells.
         // 3. If there are no unvisited neighbors
         //    3.a. Remove from the selected list
         // 4. Repeat 2-3 until the selected list is empty.

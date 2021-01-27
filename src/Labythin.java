@@ -1,3 +1,14 @@
+/*
+** IUT Nancy-Charlemagne, 2021
+** Projet :
+**    Labythin
+** Author :
+**    Erin      Bernardoni
+**    Antoine   Orion
+** File description :
+**    Implementation of the Labyrinthe. Contain every majors functions to create one
+*/
+
 import java.util.ArrayList;
 import java.awt.geom.*;
 
@@ -40,7 +51,6 @@ public class Labythin {
             }
             res += ("\n");
         }
-
         return (res);
     }
 
