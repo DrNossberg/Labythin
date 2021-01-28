@@ -10,28 +10,29 @@
 **    size and the desired algorithme/output
 */
 
+import java.util.ArrayList;
+import java.util.Random;
+import java.awt.Point;
 
 class MazeGenerator {
-	public static final Random R = new Random();
-	ArrayList<Point2D> activeSet;
-	ArrayList<Point2D> visitedNodes;
-	Point2D activeNode; 				//TODO à déplacer dans le maze ? à voir 
-	Point2D neighbor;
+	private final Random rand;
+	private ArrayList<Point> activeSet;
+	private ArrayList<Point> visitedNodes;
+	private Point activeNode; 				//TODO à déplacer dans le maze ? à voir 
+	private Point neighbor;
 
 
 	public MazeGenerator() {
-		this.activeSet = new ArrayList<Point2D>();
-		this.visitedNodes = new ArrayList<Point2D>();
-		this.activeNode =  new Point2D(0, 0);
+		this.rand = new Random();
+		this.activeSet = new ArrayList<Point>();
+		this.visitedNodes = new ArrayList<Point>();
+		this.activeNode =  new Point(0, 0);
 			//IDEA 0,0 pourrait changer, à passer en arg à la construction du maze. à voir avec le parsing
-		this.activeSet.add(this.activeNode);
-
 	}
 
 	public Maze createMaze(int width, int height) {
 		Maze maze = new Maze(width, height, '#');  //TODO '#' shouldn't be hard coded. Const, or interface maybe ?
 		
-		maze.change(this.activeNode, '.'); //TODO same  /|\
 		return (maze);
 	}
 
@@ -54,111 +55,92 @@ class MazeGenerator {
 		 * Choose first activeNode
 		 * Run the maze generation
 		 */
-	public static void generate(Maze lab) {
+
+	public void generate(Maze maze) {
 		this.generate(maze, 1);
 	}
 
-	public static void generate(Maze lab, int mode) throws Exception {
+	public void generate(Maze maze, int mode) {
+		this.activeSet.add(this.activeNode);
+
 		while (!this.activeSet.isEmpty()) {
 			// Select node from active set
-			switch (mode) {
-				case 1:
-					activeNode = this.activeSet.get(this.activeSet.size()-1);
-					break;
-				case 2:
-					activeNode = this.activeSet.get(Main.R.nextInt(this.activeSet.size()));
-					break;
-				case 3:
-					activeNode = this.activeSet.get(0);
-					break;
-				case 4:
-					if (Math.random() > 0.5) 
-						activeNode = this.activeSet.get(this.activeSet.size()-1);
-					else
-						activeNode = this.activeSet.get(Main.R.nextInt(this.activeSet.size()));
-					break;
-				default:
-					throw new Exception("Unknown mode");
+			try {
+				this.activeNode = this.activeSet.get(pickActiveNode(mode));
+			} catch (Exception e) {
+				System.out.println(e);
 			}
-			if (!visitedNodes.contains(activeNode))
-				visitedNodes.add(activeNode);
+			maze.change(this.activeNode, '.'); //TODO hardcoded
 
-			// Choose a random neighbor node, if none available remove active node from active set
-			neighbor = lab.randomNeighbor(visitedNodes, activeNode);
-	
-			/**
-			 * A la base j'ai fait ça, mais ça bloque quand le labyrinthe est pair
-			 */
 			/*
-			* if (neighbor.getX() == Main.DEFAULT_NODE && neighbor.getY() == Main.DEFAULT_NODE) { // no neighbor
-			*     this.activeSet.remove(activeNode);
-			* } else {
-			*     lab.changeToPath(new Point2D.Double(
-			*         (activeNode.getX() + neighbor.getX()) / 2,
-			*         (activeNode.getY() + neighbor.getY()) / 2
-			*     ));
-			*
-			*     // neighbor
-			*     lab.changeToPath(neighbor);
-			*     this.activeSet.add(neighbor);
-			*     visitedNodes.add(neighbor);
-			* }
+			 * A la base j'ai fait ça, mais ça bloque quand le labyrinthe est pair - so change the size ? by checking with % 2 :)
+			 *
+			 *
+			 * if (neighbor.x == Main.DEFAULT_NODE && neighbor.y == Main.DEFAULT_NODE) { // no neighbor
+			 *     this.activeSet.remove(activeNode);
+			 * } else {
+			 *     lab.changeToPath(new Point.Double(
+			 *         (activeNode.x + neighbor.x) / 2,
+			 *         (activeNode.y + neighbor.y) / 2
+			 *     ));
+			 *
+			 *     // neighbor
+			 *     lab.changeToPath(neighbor);
+			 *     this.activeSet.add(neighbor);
+			 *     visitedNodes.add(neighbor);
+			 * }
 			*/
 
-
-			if (neighbor.getX() == Main.DEFAULT_NODE && neighbor.getY() == Main.DEFAULT_NODE) { // no neighbor
-				this.activeSet.remove(activeNode);
+			// Choose a random neighbor node, if none available remove active node from active set
+			if ((neighbor = pickRandomNeighbor(maze)).equals(new Point(-1, -1))) { // no neighbor
+				this.activeSet.remove(this.activeNode);
+				continue;
 			} else {
-				//visitedNodes.add(neighbor); // j'ai essayé d'ajouter le fictif dans le visite nodes ici
-				if (!visitedNodes.contains(neighbor))
-					visitedNodes.add(neighbor);
-				if (neighbor.getX() < 0)
-					neighbor = new Point2D.Double(0, neighbor.getY());
-				else if (neighbor.getX() > lab.getWidth()-1)
-					neighbor = new Point2D.Double(lab.getWidth()-1, neighbor.getY());
-				else if (neighbor.getY() < 0)
-					neighbor = new Point2D.Double(neighbor.getX(), 0);
-				else if (neighbor.getY() > lab.getHeight()-1)
-					neighbor = new Point2D.Double(neighbor.getX(), lab.getHeight()-1);
-				else {
 					// inbetween node
-					Point2D inBetweenNode = new Point2D.Double(
-						(activeNode.getX() + neighbor.getX()) / 2,
-						(activeNode.getY() + neighbor.getY()) / 2
-					);
-					lab.changeToPath(inBetweenNode);
-					visitedNodes.add(inBetweenNode);
+					Point inBetweenNode = new Point(
+						(this.activeNode.x + neighbor.x) / 2,
+						(this.activeNode.y + neighbor.y) / 2);
+					maze.change(inBetweenNode, '.');
+					//TODO simplify
+					// visitedNodes.add(inBetweenNode); //non ??
 					this.activeSet.add(neighbor);
-				}
-
-				// neighbor
-				lab.changeToPath(neighbor);
-				if (!visitedNodes.contains(neighbor))
-					visitedNodes.add(neighbor);
 			}
 
+			// neighbor
+			// if (!visitedNodes.contains(neighbor)) //? NOT IN, as known as the worst thing *ever*
+			visitedNodes.add(neighbor);
 		}
 	}
 
-	private ArrayList<Point2D> findUnvisitedNeighbors(ArrayList<Point2D> visitedNodes) {
-		// create an array with all unvisited neighbors
-		ArrayList<Point2D> unvisitedNeighbors = new ArrayList<>();
-		double x = this.activeNode.getX();
-		double y = this.activeNode.getY();
+	private int pickActiveNode(int mode) throws Exception {
+		switch (mode) {
+			case 1:
+				return(this.activeSet.size() - 1);
+			case 2:
+				return(this.rand.nextInt(this.activeSet.size()));
+			case 3:
+				return(0);
+			case 4:
+				if (Math.random() > 0.5) 
+					return(pickActiveNode(1));
+				return(pickActiveNode(2));
+			default:
+				throw new Exception("Unknown mode");
+		}
+	}
 
-		// fill array of unvisited neighbors with existing nodes
-		if (x > 0 && !visitedNodes.contains(new Point2D(x-2, y))) // x = 0 -> left border
-			unvisitedNeighbors.add(new Point2D(x-2, y));
+	// create and return an array with all unvisited neighbors
+	private ArrayList<Point> findUnvisitedNeighbors(Maze maze) {
+		ArrayList<Point> unvisitedNeighbors = new ArrayList<Point>();
+		int step[][] = {{2, 0}, {0, 2}, {- 2, 0}, {0, - 2}};
 
-		if (x < this.width-1 && !visitedNodes.contains(new Point2D(x+2, y))) // x = width-1 -> right border
-			unvisitedNeighbors.add(new Point2D(x+2,y));
-
-		if (y > 0 && !visitedNodes.contains(new Point2D(x, y-2))) // y = 0 -> top border
-			unvisitedNeighbors.add(new Point2D(x, y-2));
-
-		if (y < this.height-1 && !visitedNodes.contains(new Point2D(x, y+2))) // y = height-1 -> bottom border
-			unvisitedNeighbors.add(new Point2D(x, y+2));
-
+		for (int item[] : step) {
+			int x = this.activeNode.x + item[0];
+			int y = this.activeNode.y + item[1];
+			if ((x > 0 &&  x < maze.getWidth()) && (y > 0 &&  y < maze.getHeight()) &&
+					!this.visitedNodes.contains(new Point(x, y))) //TODO get rid of this by checking the maze value
+				unvisitedNeighbors.add(new Point(y, y));
+		}
 		return (unvisitedNeighbors);
 	}
 
@@ -167,15 +149,13 @@ class MazeGenerator {
 	 * @param visitedNodes array of already visited nodes
 	 * @return random neighbor (takes into account if none exists)
 	 */
-	public Point2D pickRandomNeighbor(ArrayList<Point2D> visitedNodes) {
-		ArrayList<Point2D> unvisitedNeighbors = this.findUnvisitedNeighbors(visitedNodes);
-		Point2D res;
+	public Point pickRandomNeighbor(Maze maze) {
+		ArrayList<Point> unvisitedNeighbors = this.findUnvisitedNeighbors(maze);
+
 		// define selected unvisited neighbor
 		if (unvisitedNeighbors.size() > 0)
-			res = unvisitedNeighbors.get(Main.R.nextInt(unvisitedNeighbors.size()));
-		else // none exists
-			res = new Point2D.Double(Main.DEFAULT_NODE, Main.DEFAULT_NODE);
-		
-		return res;
+			return (unvisitedNeighbors.get(this.rand.nextInt(unvisitedNeighbors.size())));
+		return (new Point(-1, -1));
 	}
+	// At this point do we really need this function ? 
 }
