@@ -43,6 +43,6 @@ public class Maze {
 		}
 	}
 
-	public int getWidth() {     return this.width;  }
+	public int getWidth()  {    return this.width;  }
 	public int getHeight() {    return this.height; }
 }
