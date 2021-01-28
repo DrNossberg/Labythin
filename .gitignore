@@ -27,3 +27,6 @@ test*
 
 #Sublime Text based files
 Labythin.sublime-*
+
+#Binary folder
+bin/
