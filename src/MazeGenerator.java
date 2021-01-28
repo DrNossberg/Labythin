@@ -62,6 +62,7 @@ class MazeGenerator {
 
 	public void generate(Maze maze, int mode) {
 		this.activeSet.add(this.activeNode);
+		this.visitedNodes.add(this.activeNode);
 
 		while (!this.activeSet.isEmpty()) {
 			// Select node from active set
@@ -96,19 +97,19 @@ class MazeGenerator {
 				this.activeSet.remove(this.activeNode);
 				continue;
 			} else {
-					// inbetween node
-					Point inBetweenNode = new Point(
-						(this.activeNode.x + neighbor.x) / 2,
-						(this.activeNode.y + neighbor.y) / 2);
-					maze.change(inBetweenNode, '.');
-					//TODO simplify
-					// visitedNodes.add(inBetweenNode); //non ??
-					this.activeSet.add(neighbor);
+				// inbetween node
+				Point inBetweenNode = new Point(
+					(this.activeNode.x + neighbor.x) / 2,
+					(this.activeNode.y + neighbor.y) / 2);
+				maze.change(inBetweenNode, '.');
+				//TODO simplify
+				// visitedNodes.add(inBetweenNode); //non ??
+				this.activeSet.add(neighbor);
 			}
 
 			// neighbor
 			// if (!visitedNodes.contains(neighbor)) //? NOT IN, as known as the worst thing *ever*
-			visitedNodes.add(neighbor);
+			this.visitedNodes.add(neighbor);
 		}
 	}
 
@@ -137,9 +138,9 @@ class MazeGenerator {
 		for (int item[] : step) {
 			int x = this.activeNode.x + item[0];
 			int y = this.activeNode.y + item[1];
-			if ((x > 0 &&  x < maze.getWidth()) && (y > 0 &&  y < maze.getHeight()) &&
+			if ((x >= 0 && x < maze.getWidth()) && (y >= 0 &&  y < maze.getHeight()) &&
 					!this.visitedNodes.contains(new Point(x, y))) //TODO get rid of this by checking the maze value
-				unvisitedNeighbors.add(new Point(y, y));
+				unvisitedNeighbors.add(new Point(x, y));
 		}
 		return (unvisitedNeighbors);
 	}
