@@ -43,6 +43,7 @@ public class Maze {
 		}
 	}
 
+	public char getValue(int x, int y) { return this.tab[y][x]; }
 	public int getWidth()  {    return this.width;  }
 	public int getHeight() {    return this.height; }
 }

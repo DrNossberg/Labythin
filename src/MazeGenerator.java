@@ -31,7 +31,7 @@ class MazeGenerator {
 	}
 
 	public Maze createMaze(int width, int height) {
-		Maze maze = new Maze(width, height, '#');  //TODO '#' shouldn't be hard coded. Const, or interface maybe ?
+		Maze maze = new Maze(width, height, MazeElement.WALL_UNVISITED.getState());  //TODO '#' shouldn't be hard coded. Const, or interface maybe ?
 		
 		return (maze);
 	}
@@ -61,9 +61,12 @@ class MazeGenerator {
 	}
 
 	public void generate(Maze maze, int mode) {
+		// Originel node
 		this.activeSet.add(this.activeNode);
-		this.visitedNodes.add(this.activeNode);
+		//this.visitedNodes.add(this.activeNode);
+		maze.change(this.activeNode, MazeElement.PATH_VISITED.getState());
 
+		// Main loop of the generator
 		while (!this.activeSet.isEmpty()) {
 			// Select node from active set
 			try {
@@ -71,26 +74,7 @@ class MazeGenerator {
 			} catch (Exception e) {
 				System.out.println(e);
 			}
-			maze.change(this.activeNode, '.'); //TODO hardcoded
-
-			/*
-			 * A la base j'ai fait ça, mais ça bloque quand le labyrinthe est pair - so change the size ? by checking with % 2 :)
-			 *
-			 *
-			 * if (neighbor.x == Main.DEFAULT_NODE && neighbor.y == Main.DEFAULT_NODE) { // no neighbor
-			 *     this.activeSet.remove(activeNode);
-			 * } else {
-			 *     lab.changeToPath(new Point.Double(
-			 *         (activeNode.x + neighbor.x) / 2,
-			 *         (activeNode.y + neighbor.y) / 2
-			 *     ));
-			 *
-			 *     // neighbor
-			 *     lab.changeToPath(neighbor);
-			 *     this.activeSet.add(neighbor);
-			 *     visitedNodes.add(neighbor);
-			 * }
-			*/
+			maze.change(this.activeNode, MazeElement.PATH_VISITED.getState()); //TODO hardcoded
 
 			// Choose a random neighbor node, if none available remove active node from active set
 			if ((neighbor = pickRandomNeighbor(maze)).equals(new Point(-1, -1))) { // no neighbor
@@ -98,10 +82,10 @@ class MazeGenerator {
 				continue;
 			} else {
 				// inbetween node
-				Point inBetweenNode = new Point(
+				maze.change(new Point(
 					(this.activeNode.x + neighbor.x) / 2,
-					(this.activeNode.y + neighbor.y) / 2);
-				maze.change(inBetweenNode, '.');
+					(this.activeNode.y + neighbor.y) / 2), 
+					MazeElement.PATH_VISITED.getState());
 				//TODO simplify
 				// visitedNodes.add(inBetweenNode); //non ??
 				this.activeSet.add(neighbor);
@@ -109,7 +93,8 @@ class MazeGenerator {
 
 			// neighbor
 			// if (!visitedNodes.contains(neighbor)) //? NOT IN, as known as the worst thing *ever*
-			this.visitedNodes.add(neighbor);
+			//this.visitedNodes.add(neighbor);
+			maze.change(neighbor, MazeElement.PATH_VISITED.getState());
 		}
 	}
 
@@ -138,8 +123,10 @@ class MazeGenerator {
 		for (int item[] : step) {
 			int x = this.activeNode.x + item[0];
 			int y = this.activeNode.y + item[1];
-			if ((x >= 0 && x < maze.getWidth()) && (y >= 0 &&  y < maze.getHeight()) &&
-					!this.visitedNodes.contains(new Point(x, y))) //TODO get rid of this by checking the maze value
+			if ((x >= 0 && x < maze.getWidth()) && 
+				(y >= 0 &&  y < maze.getHeight()) &&
+				(maze.getValue(x, y) == MazeElement.WALL_UNVISITED.getState() || 
+					maze.getValue(x, y) == MazeElement.PATH_UNVISITED.getState()))
 				unvisitedNeighbors.add(new Point(x, y));
 		}
 		return (unvisitedNeighbors);
