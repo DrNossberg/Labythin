@@ -96,6 +96,35 @@ class MazeGenerator {
 			//this.visitedNodes.add(neighbor);
 			maze.change(neighbor, MazeElement.PATH_VISITED.getState());
 		}
+
+		// Complete borders for pair maze
+		// TODO maybe do a method ?
+		if (maze.getHeight() % 2 == 0) {
+			for (int i = 1; i < maze.getWidth()-1; i++) {
+				if (Math.random() > .5)
+					maze.change(new Point(i, maze.getHeight()-1), MazeElement.PATH_VISITED.getState());
+			}
+		} 
+
+		if (maze.getWidth() % 2 == 0) {
+			for (int i = 1; i < maze.getHeight()-1; i++) {
+				if (Math.random() > .5)
+					maze.change(new Point(maze.getWidth()-1, i), MazeElement.PATH_VISITED.getState());
+			}
+		} 
+
+		// Control the exit of the maze
+		if (!maze.isPath(new Point(maze.getWidth()-1, maze.getHeight()-1)))
+			maze.change(new Point(maze.getWidth()-1, maze.getHeight()-1), MazeElement.PATH_VISITED.getState());
+		
+		if (maze.isWall(new Point(maze.getWidth()-1, maze.getHeight()-2)) &&
+			maze.isWall(new Point(maze.getWidth()-2, maze.getHeight()-1))) {
+				if (Math.random() > .5)
+					maze.change(new Point(maze.getWidth()-1, maze.getHeight()-2), MazeElement.PATH_VISITED.getState());
+				else
+					maze.change(new Point(maze.getWidth()-2, maze.getHeight()-1), MazeElement.PATH_VISITED.getState());
+			}
+			
 	}
 
 	private int pickActiveNode(int mode) throws Exception {
@@ -125,8 +154,7 @@ class MazeGenerator {
 			int y = this.activeNode.y + item[1];
 			if ((x >= 0 && x < maze.getWidth()) && 
 				(y >= 0 &&  y < maze.getHeight()) &&
-				(maze.getValue(x, y) == MazeElement.WALL_UNVISITED.getState() || 
-					maze.getValue(x, y) == MazeElement.PATH_UNVISITED.getState()))
+				maze.isUnvisited(new Point(x,y)))
 				unvisitedNeighbors.add(new Point(x, y));
 		}
 		return (unvisitedNeighbors);
