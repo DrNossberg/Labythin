@@ -37,7 +37,7 @@ public class Maze {
 	public void display() { // color option for colored output ?
 		for (int y = 0; y < this.height; y++) { // row by row
 			for (int x = 0; x < this.width; x++) { // column by column
-				if (this.isPath(new Point(x,y)))
+				if (!this.isWall(new Point(x,y)))
 					System.out.print(".");
 				else
 					System.out.print("#");
@@ -49,16 +49,6 @@ public class Maze {
 	public boolean isWall(Point node) {
 		return (this.getValue(node.x, node.y) == MazeElement.WALL_VISITED.getState() || 
 				this.getValue(node.x, node.y) == MazeElement.WALL_UNVISITED.getState());
-	}
-
-	public boolean isPath(Point node) {
-		return (this.getValue(node.x, node.y) == MazeElement.PATH_UNVISITED.getState() ||
-				this.getValue(node.x, node.y) == MazeElement.PATH_VISITED.getState());
-	}
-
-	public boolean isVisited(Point node) {
-		return (this.getValue(node.x, node.y) == MazeElement.PATH_VISITED.getState() ||
-				this.getValue(node.x, node.y) == MazeElement.WALL_VISITED.getState());
 	}
 
 	public boolean isUnvisited(Point node) {

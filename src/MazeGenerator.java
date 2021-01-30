@@ -38,7 +38,7 @@ class MazeGenerator {
 
 	/**
 	 * 
-	 * @param lab
+	 * @param maze
 	 * @param mode 1: Recursive Backtracker (newest) 2: Prism (random) 3: oldest 4:
 	 *             50/50
 	 * @throws Exception
@@ -57,10 +57,10 @@ class MazeGenerator {
 		 */
 
 	public void generate(Maze maze) {
-		this.generate(maze, 1);
+		this.generate(maze, Mode.RECURSIVE_BACKTRACKER);
 	}
 
-	public void generate(Maze maze, int mode) {
+	public void generate(Maze maze, Mode mode) {
 		// Originel node
 		this.activeSet.add(this.activeNode);
 		//this.visitedNodes.add(this.activeNode);
@@ -114,7 +114,7 @@ class MazeGenerator {
 		} 
 
 		// Control the exit of the maze
-		if (!maze.isPath(new Point(maze.getWidth()-1, maze.getHeight()-1)))
+		if (maze.isWall(new Point(maze.getWidth()-1, maze.getHeight()-1)))
 			maze.change(new Point(maze.getWidth()-1, maze.getHeight()-1), MazeElement.PATH_VISITED.getState());
 		
 		if (maze.isWall(new Point(maze.getWidth()-1, maze.getHeight()-2)) &&
@@ -127,25 +127,34 @@ class MazeGenerator {
 			
 	}
 
-	private int pickActiveNode(int mode) throws Exception {
+	/**
+	 * Pick an active Node from the active set regarding the mode
+	 * @param mode for choosing the active node
+	 * @return index of the active set where to find the active node
+	 */
+	private int pickActiveNode(Mode mode) throws Exception {
 		switch (mode) {
-			case 1:
+			case RECURSIVE_BACKTRACKER:
 				return(this.activeSet.size() - 1);
-			case 2:
+			case PRISM:
 				return(this.rand.nextInt(this.activeSet.size()));
-			case 3:
+			case OLDEST:
 				return(0);
-			case 4:
+			case FIFTY_FITY:
 				if (Math.random() > 0.5) 
-					return(pickActiveNode(1));
-				return(pickActiveNode(2));
+					return(pickActiveNode(Mode.RECURSIVE_BACKTRACKER));
+				return(pickActiveNode(Mode.PRISM));
 			default:
 				throw new Exception("Unknown mode");
 		}
 	}
 
-	// create and return an array with all unvisited neighbors
-	private ArrayList<Point> findUnvisitedNeighbors(Maze maze) {
+	/**
+	 * Select a random unvisited neighbor of the active Node
+	 * @param maze 
+	 * @return random neighbor (takes into account if none exists)
+	 */
+	public Point pickRandomNeighbor(Maze maze) {
 		ArrayList<Point> unvisitedNeighbors = new ArrayList<Point>();
 		int step[][] = {{2, 0}, {0, 2}, {- 2, 0}, {0, - 2}};
 
@@ -157,21 +166,10 @@ class MazeGenerator {
 				maze.isUnvisited(new Point(x,y)))
 				unvisitedNeighbors.add(new Point(x, y));
 		}
-		return (unvisitedNeighbors);
-	}
-
-	/**
-	 * Select a random unvisited neighbor of the active Node
-	 * @param visitedNodes array of already visited nodes
-	 * @return random neighbor (takes into account if none exists)
-	 */
-	public Point pickRandomNeighbor(Maze maze) {
-		ArrayList<Point> unvisitedNeighbors = this.findUnvisitedNeighbors(maze);
 
 		// define selected unvisited neighbor
 		if (unvisitedNeighbors.size() > 0)
 			return (unvisitedNeighbors.get(this.rand.nextInt(unvisitedNeighbors.size())));
 		return (new Point(-1, -1));
 	}
-	// At this point do we really need this function ? 
 }
