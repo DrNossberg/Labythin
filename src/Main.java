@@ -10,6 +10,9 @@
 */
 
 import java.util.ArrayList;
+
+import javax.lang.model.util.ElementScanner6;
+
 import java.awt.geom.*;
 
 public class Main {
@@ -26,8 +29,13 @@ public class Main {
 			// et seront aussi formatés à ce moment là. Les erreur y seront gérés
 
 		// Run the maze generator
+		Mode mode;
 		try {
-			generator.generate(maze);
+			if (args.length == 3) {
+				mode = Mode.valueOf(args[2].toUpperCase());
+				generator.generate(maze, mode);
+			} else
+				generator.generate(maze);
 		} catch (Exception e) {
 			System.out.println(e);
 		}
