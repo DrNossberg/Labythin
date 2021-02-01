@@ -30,3 +30,10 @@ Labythin.sublime-*
 
 #Binary folder
 bin/
+colored_header\.txt
+
+header_format\.py
+
+Makefile
+
+src/MainParser\.java

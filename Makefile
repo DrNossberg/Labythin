@@ -9,8 +9,8 @@
 ##    Compile and execute the Labythin projet
 ##
 
-# NAME		:= Parser
-NAME		:= Main #Labythin
+NAME		:= MainParser
+# NAME		:= Main #Labythin
 JC 			:= javac
 EXEC		:= java
 FILE_TYPE	:= java
@@ -21,10 +21,12 @@ SRC_DIR 	:= src
 OBJ_DIR		:= bin
 LIB_DIR		:= lib
 
-# SRC 		:= Parser.java 
-SRC 		:=  $(SRC_DIR)/Main.java  \
-				$(SRC_DIR)/Maze.java \
-				$(SRC_DIR)/MazeGenerator.java
+SRC 		:= $(SRC_DIR)/Parser.java  \
+				$(SRC_DIR)/MainParser.java
+
+# SRC 		:=  $(SRC_DIR)/Main.java  \
+# 				$(SRC_DIR)/Maze.java \
+# 				$(SRC_DIR)/MazeGenerator.java
 
 
 # SRC			:=$(wildcard $(SRC_DIR)/*.$(FILE_TYPE))
@@ -38,15 +40,12 @@ ARGS		= ""
 
 all		: $(NAME)
 
-#make ARGS="34 54"
 $(NAME)	: $(OBJ)
-	$(EXEC) $(EXEFLAGS) $(NAME) $(ARGS)
-# 	$(EXEC) $(EXEFLAGS):$(LFLAGS) $(NAME)
+	$(EXEC) $(EXEFLAGS):$(LFLAGS) $(NAME) $(ARGS)
 
 
 $(OBJ_DIR)/%.$(OBJ_TYPE) : $(SRC_DIR)/%.$(FILE_TYPE)
-	$(JC) $(CFLAGS) -d $(OUTPUT_DIR)/$(shell dirname $@) $^
-# 	$(JC) $(CFLAGS):$(LFLAGS) -d $(OUTPUT_DIR)/$(shell dirname $@) $^
+	$(JC) $(CFLAGS):$(LFLAGS) -d $(OUTPUT_DIR)/$(shell dirname $@) $^
 
 clean	:
 	rm -f $(wildcard $(OBJ_DIR)/*.$(OBJ_TYPE))
