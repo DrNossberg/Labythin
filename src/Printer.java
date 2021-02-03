@@ -12,6 +12,7 @@ import java.io.File;
 import java.awt.Point;
 
 class Printer {
+	
 	File file;
 	boolean color;
 

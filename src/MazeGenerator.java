@@ -31,7 +31,7 @@ class MazeGenerator {
 	}
 
 	public Maze createMaze() {
-		return (new Maze(this.width, this.height, MazeElement.WALL_UNVISITED.getState()));
+		return (new Maze(this.width, this.height, MazeElement.WALL_UNVISITED));
 	}
 
 	/**
@@ -55,26 +55,13 @@ class MazeGenerator {
 		 */
 
 	public void generate(Maze maze) {
-		// this.generate(maze, Mode.RECURSIVE_BACKTRACKER);
-
-		if (recursive)
-			do_recursive(maze, this.activeNode);
-		// else ()
-		// 	iteratif(maze, mode);
-
-
-	}
-
-	public void do_recursive(Maze maze, Point activeNode) {
-		Point next = pickRandomNeighbor(maze, activeNode);
-
-		do_recursive(maze, activeNode);
+		this.generate(maze, Mode.RECURSIVE_BACKTRACKER);
 	}
 
 	public void generate(Maze maze, Mode mode) {
 		// Originel node
 		this.activeSet.add(this.activeNode);
-		maze.change(this.activeNode, MazeElement.PATH_VISITED.getState());
+		maze.change(this.activeNode);
 
 		while (!this.activeSet.isEmpty()) {
 			// Select node from active set
@@ -83,7 +70,7 @@ class MazeGenerator {
 			} catch (Exception e) {
 				System.out.println(e);
 			}
-			maze.change(this.activeNode, MazeElement.PATH_VISITED.getState()); //TODO hardcoded
+			maze.change(this.activeNode);
 
 			// Choose a random neighbor node, if none available remove active node from active set
 			if ((neighbor = pickRandomNeighbor(maze)).equals(new Point(-1, -1))) { // no neighbor
@@ -93,13 +80,12 @@ class MazeGenerator {
 				// inbetween node
 				maze.change(new Point(
 					(this.activeNode.x + neighbor.x) / 2,
-					(this.activeNode.y + neighbor.y) / 2), 
-					MazeElement.PATH_VISITED.getState());
+					(this.activeNode.y + neighbor.y) / 2));
 				this.activeSet.add(neighbor);
 			}
 
 			// neighbor
-			maze.change(neighbor, MazeElement.PATH_VISITED.getState());
+			maze.change(neighbor);
 		}
 
 		// Complete borders for pair maze
@@ -107,27 +93,27 @@ class MazeGenerator {
 		if (maze.getHeight() % 2 == 0) {
 			for (int i = 1; i < maze.getWidth()-1; i++) {
 				if (Math.random() > .5)
-					maze.change(new Point(i, maze.getHeight()-1), MazeElement.PATH_VISITED.getState());
+					maze.change(new Point(i, maze.getHeight()-1));
 			}
 		} 
 
 		if (maze.getWidth() % 2 == 0) {
 			for (int i = 1; i < maze.getHeight()-1; i++) {
 				if (Math.random() > .5)
-					maze.change(new Point(maze.getWidth()-1, i), MazeElement.PATH_VISITED.getState());
+					maze.change(new Point(maze.getWidth()-1, i));
 			}
 		} 
 
 		// Control the exit of the maze
 		if (maze.isWall(new Point(maze.getWidth()-1, maze.getHeight()-1)))
-			maze.change(new Point(maze.getWidth()-1, maze.getHeight()-1), MazeElement.PATH_VISITED.getState());
+			maze.change(new Point(maze.getWidth()-1, maze.getHeight()-1));
 		
 		if (maze.isWall(new Point(maze.getWidth()-1, maze.getHeight()-2)) &&
 			maze.isWall(new Point(maze.getWidth()-2, maze.getHeight()-1))) {
 				if (Math.random() > .5)
-					maze.change(new Point(maze.getWidth()-1, maze.getHeight()-2), MazeElement.PATH_VISITED.getState());
+					maze.change(new Point(maze.getWidth()-1, maze.getHeight()-2));
 				else
-					maze.change(new Point(maze.getWidth()-2, maze.getHeight()-1), MazeElement.PATH_VISITED.getState());
+					maze.change(new Point(maze.getWidth()-2, maze.getHeight()-1));
 			}
 			
 	}
@@ -139,13 +125,13 @@ class MazeGenerator {
 	 */
 	private int pickActiveNode(Mode mode) throws Exception {
 		switch (mode) {
-			case RECURSIVE_BACKTRACKER:
+			case RECURSIVE_BACKTRACKER :
 				return(this.activeSet.size() - 1);
-			case PRISM:
+			case PRISM :
 				return(this.rand.nextInt(this.activeSet.size()));
-			case OLDEST:
+			case OLDEST :
 				return(0);
-			case FIFTY_FITY:
+			case FIFTY_FITY :
 				if (Math.random() > 0.5) 
 					return(pickActiveNode(Mode.RECURSIVE_BACKTRACKER));
 				return(pickActiveNode(Mode.PRISM));

@@ -9,6 +9,7 @@
 **    Enumeration of the possible states of a node in the maze
 */
 
+
 public enum MazeElement {
     WALL_UNVISITED('"'),
     WALL_VISITED('_'),
@@ -21,7 +22,11 @@ public enum MazeElement {
         this.state = state;
     }
 
-    public char getState() {
+    public char getChar() {
+        return this.state;
+    }
+
+    public char toChar() {
         return this.state;
     }
 }

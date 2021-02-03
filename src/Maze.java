@@ -17,21 +17,33 @@ public class Maze {
 	private int height;
 	private char[][] tab;
 
-	public Maze(int width, int height, char default_char) {
+	public Maze(int width, int height, MazeElement default_element) {
 		this.width = width;
 		this.height = height;
-
 		this.tab = new char[this.height][this.width];
 		for (int y = 0; y < this.height; y++) // row by row
-				Arrays.fill(tab[y], default_char);
+				Arrays.fill(tab[y], default_element.getChar());
 	}
 
 	/**
 	 * Change a gived position
 	 * @param node
 	 */
-	public void change(Point node, char value) {
-		this.tab[node.y][node.x] = value; //
+
+	public void change(int x, int y, MazeElement value) {
+		this.tab[x][y] = value.getChar();
+	}
+
+	public void change(int x, int y) {
+		change(x, y, MazeElement.PATH_UNVISITED);
+	}
+
+	public void change(Point node, MazeElement value) {
+		change(node.x, node.y, MazeElement.PATH_UNVISITED)
+	}
+
+	public void change(Point node) {
+		change(node, MazeElement.PATH_UNVISITED);
 	}
 
 	public boolean isWall(Point node) {
@@ -39,12 +51,12 @@ public class Maze {
 	}
 
 	public boolean isWall(int widht, int height) {
-		return (this.getValue(width, height) == MazeElement.WALL_VISITED.getState() || 
-				this.getValue(width, height) == MazeElement.WALL_UNVISITED.getState());
+		return (this.getValue(width, height) == MazeElement.WALL_VISITED.getChar() || 
+				this.getValue(width, height) == MazeElement.WALL_UNVISITED.getChar());
 	}
 	public boolean isUnvisited(Point node) {
-		return (this.getValue(node.x, node.y) == MazeElement.PATH_UNVISITED.getState() ||
-				this.getValue(node.x, node.y) == MazeElement.WALL_UNVISITED.getState());
+		return (this.getValue(node.x, node.y) == MazeElement.PATH_UNVISITED.getChar() ||
+				this.getValue(node.x, node.y) == MazeElement.WALL_UNVISITED.getChar());
 	}
 
 	public char getValue(int x, int y) { return this.tab[y][x]; }

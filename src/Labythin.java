@@ -44,8 +44,8 @@ import java.util.Scanner;
 		footer = "BERNARDONI Erin%nORION Antoine")
 
 class Labythin implements Runnable {
-	private static final int BAD_FILE  = 0;
-	private static final int GOOD_FILE = 1;
+	private enum FILE_STATE {
+		BAD_FILE, GOOD_FILE };
 
 	@Spec CommandSpec spec;
 
@@ -86,7 +86,7 @@ class Labythin implements Runnable {
 		if (f_intput != null && !f_intput.exists())
 			throw new ParameterException(spec.commandLine(),
 				"Wrong parameter : The imput file doesn't existe.");
-		else if (check_file(f_intput) == BAD_FILE)
+		else if (checkFile(f_intput) == FILE_STATE.BAD_FILE)
 			throw new ParameterException(spec.commandLine(),
 				"File issue : file " + f_intput + " isn't well formatted."); //maybe add the display of an example here | ill' depend of the format
 		if (f_output != null && ! f_output.exists()) {
@@ -106,10 +106,10 @@ class Labythin implements Runnable {
 		}
 	}
 
-	private static int check_file(File file) {
+	private static FILE_STATE checkFile(File file) {
 		//hashmap ? 
 		//formatage
-		return (GOOD_FILE);
+		return (FILE_STATE.GOOD_FILE);
 	}
 
 	private void dump() {
