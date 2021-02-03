@@ -35,10 +35,13 @@ public class Maze {
 	}
 
 	public boolean isWall(Point node) {
-		return (this.getValue(node.x, node.y) == MazeElement.WALL_VISITED.getState() || 
-				this.getValue(node.x, node.y) == MazeElement.WALL_UNVISITED.getState());
+		return (isWall(node.x, node.y));
 	}
 
+	public boolean isWall(int widht, int height) {
+		return (this.getValue(width, height) == MazeElement.WALL_VISITED.getState() || 
+				this.getValue(width, height) == MazeElement.WALL_UNVISITED.getState());
+	}
 	public boolean isUnvisited(Point node) {
 		return (this.getValue(node.x, node.y) == MazeElement.PATH_UNVISITED.getState() ||
 				this.getValue(node.x, node.y) == MazeElement.WALL_UNVISITED.getState());

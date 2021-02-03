@@ -54,7 +54,7 @@ class Labythin implements Runnable {
 	@Parameters(paramLabel = "height", defaultValue = "50", description = "height of the maze to create. default : ${DEFAULT-VALUE}")
 	double height;
 	@Option(names = {"-v", "--verbose"}, description = "verbose mode of display")
-	boolean verbose;
+	boolean verbose;	
 	@Option(names = {"-c", "--color"}, description = "color the output, makes it look fabulous")
 	boolean color;
 	@Option(names = {"-f", "--file"}, description = "file to read the maze from", paramLabel =  "FILE")
