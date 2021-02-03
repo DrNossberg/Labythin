@@ -36,9 +36,3 @@ header_format\.py
 
 #Temps files
 colored_header\.txt
-
-
-src/MainParser\.java
-
-#THIS IS TEMPORARY, HAS TO BE DELETED AS SOON AS WORKING
-Makefile
