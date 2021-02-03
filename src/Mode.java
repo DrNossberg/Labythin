@@ -15,5 +15,6 @@ public enum Mode {
     RECURSIVE_BACKTRACKER,
     PRISM,
     OLDEST,
-    FIFTY_FITY;
+    FIFTY_FITY,
+    RECURSIVE;
 }
