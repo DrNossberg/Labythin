@@ -9,8 +9,7 @@
 ##    Compile and execute the Labythin projet
 ##
 
-NAME		:= MainParser
-# NAME		:= Main #Labythin
+NAME		:= Labythin
 JC 			:= javac
 EXEC		:= java
 FILE_TYPE	:= java
@@ -21,13 +20,9 @@ SRC_DIR 	:= src
 OBJ_DIR		:= bin
 LIB_DIR		:= lib
 
-SRC 		:= $(SRC_DIR)/Parser.java  \
-				$(SRC_DIR)/MainParser.java
-
-# SRC 		:=  $(SRC_DIR)/Main.java  \
-# 				$(SRC_DIR)/Maze.java \
+SRC 		:= $(SRC_DIR)/$(NAME).java
+# 				$(SRC_DIR)/MainParser.java
 # 				$(SRC_DIR)/MazeGenerator.java
-
 
 # SRC			:=$(wildcard $(SRC_DIR)/*.$(FILE_TYPE))
 OBJ			:= $(SRC:$(SRC_DIR)/%.$(FILE_TYPE)=$(OBJ_DIR)/%.$(OBJ_TYPE))
@@ -41,7 +36,7 @@ ARGS		= ""
 all		: $(NAME)
 
 $(NAME)	: $(OBJ)
-	$(EXEC) $(EXEFLAGS):$(LFLAGS) $(NAME) $(ARGS)
+	$(EXEC) $(EXEFLAGS):$(LFLAGS) $(NAME)
 
 
 $(OBJ_DIR)/%.$(OBJ_TYPE) : $(SRC_DIR)/%.$(FILE_TYPE)

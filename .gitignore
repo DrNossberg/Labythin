@@ -30,10 +30,15 @@ Labythin.sublime-*
 
 #Binary folder
 bin/
-colored_header\.txt
 
+#Tools
 header_format\.py
 
-Makefile
+#Temps files
+colored_header\.txt
+
 
 src/MainParser\.java
+
+#THIS IS TEMPORARY, HAS TO BE DELETED AS SOON AS WORKING
+Makefile

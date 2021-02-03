@@ -15,25 +15,23 @@ import java.util.Random;
 import java.awt.Point;
 
 class MazeGenerator {
-	private final Random rand;
-	private ArrayList<Point> activeSet;
-	private ArrayList<Point> visitedNodes;
-	private Point activeNode; 				//TODO à déplacer dans le maze ? à voir 
+	private Random rand = new Random();
+	private ArrayList<Point> activeSet = new ArrayList<Point>();
+	private Point activeNode; 				
+		//TODO à déplacer dans le maze ? à voir 
 	private Point neighbor;
+	private int width;
+	private int height;
 
-
-	public MazeGenerator() {
-		this.rand = new Random();
-		this.activeSet = new ArrayList<Point>();
-		this.visitedNodes = new ArrayList<Point>();
+	public MazeGenerator(int width, int height) {
 		this.activeNode =  new Point(0, 0);
 			//IDEA 0,0 pourrait changer, à passer en arg à la construction du maze. à voir avec le parsing
+		this.width = width;
+		this.height = height;
 	}
 
-	public Maze createMaze(int width, int height) {
-		Maze maze = new Maze(width, height, MazeElement.WALL_UNVISITED.getState());  //TODO '#' shouldn't be hard coded. Const, or interface maybe ?
-		
-		return (maze);
+	public Maze createMaze() {
+		return (new Maze(this.width, this.height, MazeElement.WALL_UNVISITED.getState()));
 	}
 
 	/**
@@ -63,7 +61,6 @@ class MazeGenerator {
 	public void generate(Maze maze, Mode mode) {
 		// Originel node
 		this.activeSet.add(this.activeNode);
-		//this.visitedNodes.add(this.activeNode);
 		maze.change(this.activeNode, MazeElement.PATH_VISITED.getState());
 
 		// Main loop of the generator
@@ -86,14 +83,10 @@ class MazeGenerator {
 					(this.activeNode.x + neighbor.x) / 2,
 					(this.activeNode.y + neighbor.y) / 2), 
 					MazeElement.PATH_VISITED.getState());
-				//TODO simplify
-				// visitedNodes.add(inBetweenNode); //non ??
 				this.activeSet.add(neighbor);
 			}
 
 			// neighbor
-			// if (!visitedNodes.contains(neighbor)) //? NOT IN, as known as the worst thing *ever*
-			//this.visitedNodes.add(neighbor);
 			maze.change(neighbor, MazeElement.PATH_VISITED.getState());
 		}
 
@@ -166,7 +159,6 @@ class MazeGenerator {
 				maze.isUnvisited(new Point(x,y)))
 				unvisitedNeighbors.add(new Point(x, y));
 		}
-
 		// define selected unvisited neighbor
 		if (unvisitedNeighbors.size() > 0)
 			return (unvisitedNeighbors.get(this.rand.nextInt(unvisitedNeighbors.size())));
