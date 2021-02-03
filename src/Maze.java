@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 public class Maze {
 	private int width;
-	private int height; // DCL52-J. Do not declare more then one variable per declaration
+	private int height;
 	private char[][] tab;
 
 	public Maze(int width, int height, char default_char) {
