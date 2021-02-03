@@ -15,6 +15,7 @@ import java.util.Random;
 import java.awt.Point;
 
 class MazeGenerator {
+	private final int WIDTH = 1;
 	private Random rand = new Random();
 	private ArrayList<Point> activeSet = new ArrayList<Point>();
 	private Point activeNode; 				
@@ -54,28 +55,50 @@ class MazeGenerator {
 		 * Run the maze generation
 		 */
 
-	public void generate(Maze maze) {
-		// this.generate(maze, Mode.RECURSIVE_BACKTRACKER);
-
-		if (recursive)
-			do_recursive(maze, this.activeNode);
-		// else ()
-		// 	iteratif(maze, mode);
-
-
-	}
-
-	public void do_recursive(Maze maze, Point activeNode) {
-		Point next = pickRandomNeighbor(maze, activeNode);
-
-		do_recursive(maze, activeNode);
-	}
-
 	public void generate(Maze maze, Mode mode) {
+		// this.generate(maze, Mode.RECURSIVE_BACKTRACKER);
+		
+		if (mode.equals(Mode.RECURSIVE))
+			do_recursive(maze, this.activeNode);
+		else
+			this.do_iterative(maze, mode);
+
+		// Complete borders for pair maze
+		this.completeBorder(maze, maze.getHeight(), maze.getWidth(), 0);
+		this.completeBorder(maze, maze.getWidth(), maze.getHeight(), 1);
+
+		// Control the exit of the maze
+		this.controlExit(maze);
+
+	}
+
+	
+	/**
+	 * Recursive algorithm for Recursive Backtracker mode
+	 */
+	public void do_recursive(Maze maze, Point activeNode) {
+		maze.change(activeNode, MazeElement.PATH_VISITED.getState());
+		Point next;
+		while ((next = this.pickRandomNeighbor(maze, activeNode)) != new Point(-1, -1)) {
+			maze.change(new Point(
+				(activeNode.x + next.x) / 2,
+				(activeNode.y + next.y) / 2), 
+				MazeElement.PATH_VISITED.getState());
+			do_recursive(maze, next);
+		}
+	}
+
+
+	/**
+	 * Iterative algorithms
+	 */
+	public void do_iterative(Maze maze, Mode mode) {
 		// Originel node
 		this.activeSet.add(this.activeNode);
 		maze.change(this.activeNode, MazeElement.PATH_VISITED.getState());
 
+
+		// Iterative implementation of the algorithm
 		while (!this.activeSet.isEmpty()) {
 			// Select node from active set
 			try {
@@ -83,10 +106,10 @@ class MazeGenerator {
 			} catch (Exception e) {
 				System.out.println(e);
 			}
-			maze.change(this.activeNode, MazeElement.PATH_VISITED.getState()); //TODO hardcoded
+			maze.change(this.activeNode, MazeElement.PATH_VISITED.getState());
 
 			// Choose a random neighbor node, if none available remove active node from active set
-			if ((neighbor = pickRandomNeighbor(maze)).equals(new Point(-1, -1))) { // no neighbor
+			if ((neighbor = pickRandomNeighbor(maze, this.activeNode)).equals(new Point(-1, -1))) { // no neighbor
 				this.activeSet.remove(this.activeNode);
 				continue;
 			} else {
@@ -101,35 +124,38 @@ class MazeGenerator {
 			// neighbor
 			maze.change(neighbor, MazeElement.PATH_VISITED.getState());
 		}
+	}
 
-		// Complete borders for pair maze
-		// TODO maybe do a method ?
-		if (maze.getHeight() % 2 == 0) {
-			for (int i = 1; i < maze.getWidth()-1; i++) {
-				if (Math.random() > .5)
-					maze.change(new Point(i, maze.getHeight()-1), MazeElement.PATH_VISITED.getState());
-			}
-		} 
 
-		if (maze.getWidth() % 2 == 0) {
-			for (int i = 1; i < maze.getHeight()-1; i++) {
-				if (Math.random() > .5)
-					maze.change(new Point(maze.getWidth()-1, i), MazeElement.PATH_VISITED.getState());
-			}
-		} 
-
-		// Control the exit of the maze
+	/**
+	 * Control if an exit for the maze exists
+	 * If none exists, create one
+	 */
+	public void controlExit(Maze maze) {
 		if (maze.isWall(new Point(maze.getWidth()-1, maze.getHeight()-1)))
 			maze.change(new Point(maze.getWidth()-1, maze.getHeight()-1), MazeElement.PATH_VISITED.getState());
-		
+	
 		if (maze.isWall(new Point(maze.getWidth()-1, maze.getHeight()-2)) &&
 			maze.isWall(new Point(maze.getWidth()-2, maze.getHeight()-1))) {
 				if (Math.random() > .5)
 					maze.change(new Point(maze.getWidth()-1, maze.getHeight()-2), MazeElement.PATH_VISITED.getState());
 				else
 					maze.change(new Point(maze.getWidth()-2, maze.getHeight()-1), MazeElement.PATH_VISITED.getState());
+		}
+	}
+
+
+	public void completeBorder(Maze maze, int borderToMaybeComplete, int borderLength, int whichBorder) {
+		if (borderToMaybeComplete % 2 == 0) {
+			for (int i = 1; i < borderLength-1; i++) {
+				if (Math.random() > .5) {
+					if (whichBorder == this.WIDTH)
+						maze.change(new Point(maze.getWidth()-1, i), MazeElement.PATH_VISITED.getState());
+					else
+						maze.change(new Point(i, maze.getHeight()-1), MazeElement.PATH_VISITED.getState());
+				}
 			}
-			
+		}
 	}
 
 	/**
@@ -159,13 +185,13 @@ class MazeGenerator {
 	 * @param maze 
 	 * @return random neighbor (takes into account if none exists)
 	 */
-	public Point pickRandomNeighbor(Maze maze) {
+	public Point pickRandomNeighbor(Maze maze, Point activeN) {
 		ArrayList<Point> unvisitedNeighbors = new ArrayList<Point>();
 		int step[][] = {{2, 0}, {0, 2}, {- 2, 0}, {0, - 2}};
 
 		for (int item[] : step) {
-			int x = this.activeNode.x + item[0];
-			int y = this.activeNode.y + item[1];
+			int x = activeN.x + item[0];
+			int y = activeN.y + item[1];
 			if ((x >= 0 && x < maze.getWidth()) && 
 				(y >= 0 &&  y < maze.getHeight()) &&
 				maze.isUnvisited(new Point(x,y)))
