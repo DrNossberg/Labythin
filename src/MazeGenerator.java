@@ -58,17 +58,18 @@ class MazeGenerator {
 	public void generate(Maze maze, Mode mode) {
 		// this.generate(maze, Mode.RECURSIVE_BACKTRACKER);
 		
-		if (mode.equals(Mode.RECURSIVE))
+		if (mode == Mode.RECURSIVE )
 			do_recursive(maze, this.activeNode);
 		else
 			this.do_iterative(maze, mode);
 
 		// Complete borders for pair maze
 		this.completeBorder(maze, maze.getHeight(), maze.getWidth(), 0);
-		this.completeBorder(maze, maze.getWidth(), maze.getHeight(), 1);
+		this.completeBorder(maze, maze.getWidth(),  maze.getHeight(), 1);
 
 		// Control the exit of the maze
 		this.controlExit(maze);
+	}
 
 	public void generate(Maze maze) {
 		this.generate(maze, Mode.RECURSIVE_BACKTRACKER);
@@ -79,13 +80,12 @@ class MazeGenerator {
 	 * Recursive algorithm for Recursive Backtracker mode
 	 */
 	public void do_recursive(Maze maze, Point activeNode) {
-		maze.change(activeNode, MazeElement.PATH_VISITED.getState());
-		Point next;
+		Point next = null;
+
+		maze.change(activeNode, MazeElement.PATH_VISITED);
 		while ((next = this.pickRandomNeighbor(maze, activeNode)) != new Point(-1, -1)) {
-			maze.change(new Point(
-				(activeNode.x + next.x) / 2,
-				(activeNode.y + next.y) / 2), 
-				MazeElement.PATH_VISITED.getState());
+			maze.change((activeNode.x + next.x) / 2,
+						(activeNode.y + next.y) / 2);
 			do_recursive(maze, next);
 		}
 	}
@@ -133,14 +133,14 @@ class MazeGenerator {
 	 */
 	public void controlExit(Maze maze) {
 		if (maze.isWall(new Point(maze.getWidth()-1, maze.getHeight()-1)))
-			maze.change(new Point(maze.getWidth()-1, maze.getHeight()-1), MazeElement.PATH_VISITED.getState());
+			maze.change(maze.getWidth()-1, maze.getHeight()-1);
 	
 		if (maze.isWall(new Point(maze.getWidth()-1, maze.getHeight()-2)) &&
 			maze.isWall(new Point(maze.getWidth()-2, maze.getHeight()-1))) {
 				if (Math.random() > .5)
 					maze.change(maze.getWidth() - 1, maze.getHeight() - 2);
 				else
-					maze.change(new Point(maze.getWidth()-2, maze.getHeight()-1), MazeElement.PATH_VISITED.getState());
+					maze.change(maze.getWidth()-2, maze.getHeight()-1);
 		}
 	}
 
@@ -150,9 +150,9 @@ class MazeGenerator {
 			for (int i = 1; i < borderLength-1; i++) {
 				if (Math.random() > .5) {
 					if (whichBorder == this.WIDTH)
-						maze.change(new Point(maze.getWidth()-1, i), MazeElement.PATH_VISITED.getState());
+						maze.change(maze.getWidth()-1, i);
 					else
-						maze.change(new Point(i, maze.getHeight()-1), MazeElement.PATH_VISITED.getState());
+						maze.change(i, maze.getHeight()-1);
 				}
 			}
 		}

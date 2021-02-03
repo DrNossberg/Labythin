@@ -39,7 +39,7 @@ public class Maze {
 	}
 
 	public void change(Point node, MazeElement value) {
-		change(node.x, node.y, MazeElement.PATH_UNVISITED)
+		change(node.x, node.y, MazeElement.PATH_UNVISITED);
 	}
 
 	public void change(Point node) {
