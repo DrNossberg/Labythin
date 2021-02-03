@@ -55,7 +55,20 @@ class MazeGenerator {
 		 */
 
 	public void generate(Maze maze) {
-		this.generate(maze, Mode.RECURSIVE_BACKTRACKER);
+		// this.generate(maze, Mode.RECURSIVE_BACKTRACKER);
+
+		if (recursive)
+			do_recursive(maze, this.activeNode);
+		// else ()
+		// 	iteratif(maze, mode);
+
+
+	}
+
+	public void do_recursive(Maze maze, Point activeNode) {
+		Point next = pickRandomNeighbor(maze, activeNode);
+
+		do_recursive(maze, activeNode);
 	}
 
 	public void generate(Maze maze, Mode mode) {
@@ -63,7 +76,6 @@ class MazeGenerator {
 		this.activeSet.add(this.activeNode);
 		maze.change(this.activeNode, MazeElement.PATH_VISITED.getState());
 
-		// Main loop of the generator
 		while (!this.activeSet.isEmpty()) {
 			// Select node from active set
 			try {
