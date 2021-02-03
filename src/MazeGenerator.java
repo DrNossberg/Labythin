@@ -78,9 +78,8 @@ class MazeGenerator {
 				continue;
 			} else {
 				// inbetween node
-				maze.change(new Point(
-					(this.activeNode.x + neighbor.x) / 2,
-					(this.activeNode.y + neighbor.y) / 2));
+				maze.change((this.activeNode.x + neighbor.x) / 2,
+							(this.activeNode.y + neighbor.y) / 2);
 				this.activeSet.add(neighbor);
 			}
 
@@ -106,14 +105,14 @@ class MazeGenerator {
 
 		// Control the exit of the maze
 		if (maze.isWall(new Point(maze.getWidth()-1, maze.getHeight()-1)))
-			maze.change(new Point(maze.getWidth()-1, maze.getHeight()-1));
+			maze.change(maze.getWidth()-1, maze.getHeight()-1);
 		
 		if (maze.isWall(new Point(maze.getWidth()-1, maze.getHeight()-2)) &&
 			maze.isWall(new Point(maze.getWidth()-2, maze.getHeight()-1))) {
 				if (Math.random() > .5)
-					maze.change(new Point(maze.getWidth()-1, maze.getHeight()-2));
+					maze.change(maze.getWidth() - 1, maze.getHeight() - 2);
 				else
-					maze.change(new Point(maze.getWidth()-2, maze.getHeight()-1));
+					maze.change(maze.getWidth() - 2, maze.getHeight() - 1);
 			}
 			
 	}
