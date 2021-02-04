@@ -72,8 +72,8 @@ class Labythin implements Runnable {
 		Printer printer = new Printer(f_output, color);
 		MazeGenerator generator = new MazeGenerator(((int) width), ((int) height));
 		Maze maze = generator.createMaze();
+	
 		generator.generate(maze);
-
 		printer.display(maze);
 	}
 

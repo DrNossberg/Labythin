@@ -12,7 +12,7 @@ import java.io.File;
 import java.awt.Point;
 
 class Printer {
-	
+
 	File file;
 	boolean color;
 
@@ -21,21 +21,17 @@ class Printer {
 		this.color = color;
 	}
 
-	void display(Maze maze) {
-		if (file != null)
-			System.out.println("and BOOM.\n Suddently\n\n\nAn amazing maze");
-	}
-
-	public void display() {
-		// for (int y = 0; y < this.height; y++) { // row by row
-		// 	for (int x = 0; x < this.width; x++) { // column by column
-		// 		if (!this.isWall(new Point(x, y)))
-		// 			System.out.print(".");
-		// 		else
-		// 			System.out.print("#");
-		// 	}
-		// 	System.out.println("");
-		// }
+	public void display(Maze maze) {
+	// 	if (file != null)
+		for (int y = 0; y < maze.getHeight(); y++) { // row by row
+			for (int x = 0; x < maze.getWidth(); x++) { // column by column
+				if (maze.isWall(x, y))
+					System.out.print("#");
+				else
+					System.out.print(".");
+			}
+			System.out.println("");
+		}
 	}
 }
 

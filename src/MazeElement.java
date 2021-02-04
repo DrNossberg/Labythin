@@ -25,8 +25,4 @@ public enum MazeElement {
     public char getChar() {
         return this.state;
     }
-
-    public char toChar() {
-        return this.state;
-    }
 }

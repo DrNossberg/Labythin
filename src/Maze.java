@@ -51,8 +51,9 @@ public class Maze {
 	}
 
 	public boolean isWall(int widht, int height) {
-		return (this.getValue(width, height) == MazeElement.WALL_VISITED.getChar() || 
-				this.getValue(width, height) == MazeElement.WALL_UNVISITED.getChar());
+		char temp = this.getValue(width, height);
+		return (temp == MazeElement.WALL_VISITED.getChar() || 
+				temp == MazeElement.WALL_UNVISITED.getChar());
 	}
 	public boolean isUnvisited(Point node) {
 		return (this.getValue(node.x, node.y) == MazeElement.PATH_UNVISITED.getChar() ||

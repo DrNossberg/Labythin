@@ -56,7 +56,6 @@ class MazeGenerator {
 		 */
 
 	public void generate(Maze maze, Mode mode) {
-		// this.generate(maze, Mode.RECURSIVE_BACKTRACKER);
 		
 		if (mode == Mode.RECURSIVE )
 			do_recursive(maze, this.activeNode);
@@ -72,6 +71,7 @@ class MazeGenerator {
 	}
 
 	public void generate(Maze maze) {
+		System.out.println("here");
 		this.generate(maze, Mode.RECURSIVE_BACKTRACKER);
 	}
 
@@ -96,6 +96,7 @@ class MazeGenerator {
 	 */
 	public void do_iterative(Maze maze, Mode mode) {
 		// Originel node
+		System.out.println("iterative");
 		this.activeSet.add(this.activeNode);
 		maze.change(this.activeNode);
 
@@ -132,7 +133,8 @@ class MazeGenerator {
 	 * If none exists, create one
 	 */
 	public void controlExit(Maze maze) {
-		if (maze.isWall(new Point(maze.getWidth()-1, maze.getHeight()-1)))
+		System.out.println((maze.getWidth() - 1 )+ " " + (maze.getHeight() - 1));
+		if (maze.isWall(new Point(maze.getWidth() - 1, maze.getHeight() - 1)))
 			maze.change(maze.getWidth()-1, maze.getHeight()-1);
 	
 		if (maze.isWall(new Point(maze.getWidth()-1, maze.getHeight()-2)) &&
