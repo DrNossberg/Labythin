@@ -15,7 +15,6 @@ import java.util.Random;
 import java.awt.Point;
 
 class MazeGenerator {
-	private final int WIDTH = 1;
 	private Random rand = new Random();
 	private Point activeNode; 				
 		//TODO à déplacer dans le maze ? à voir 
@@ -141,32 +140,25 @@ class MazeGenerator {
 	 * If none exists, create one
 	 */
 	public void controlExit(Maze maze) {
-		// Node at the right bottom
-		if (maze.isWall(new Point(maze.getWidth() - 1, maze.getHeight() - 1)))
-			maze.change(maze.getWidth()-1, maze.getHeight()-1);
-	
+		int w = maze.getWidth() - 1;
+		int h = maze.getHeight() - 1;
+
+		maze.change(w, h);
 		// Make path to one of node at the right bottom's direct neighbors
-		if (maze.isWall(new Point(maze.getWidth()-1, maze.getHeight()-2)) &&
-			maze.isWall(new Point(maze.getWidth()-2, maze.getHeight()-1))) {
-				if (Math.random() > .5)
-					maze.change(maze.getWidth() - 1, maze.getHeight() - 2);
-				else
-					maze.change(maze.getWidth()-2, maze.getHeight()-1);
-		}
+		if (maze.isWall(w, h - 1) && maze.isWall(w - 1, h))
+			if (Math.random() > .5)
+				maze.change(w, h - 1);
+			else
+				maze.change(w - 1, h);
 	}
 
-
-	public void completeBorder(Maze maze, int borderToMaybeComplete, int borderLength, int whichBorder) {
-		if (borderToMaybeComplete % 2 == 0) {
-			for (int i = 1; i < borderLength-1; i++) {
-				if (Math.random() > .5) {
-					if (whichBorder == this.WIDTH)
-						maze.change(maze.getWidth()-1, i);
-					else
-						maze.change(i, maze.getHeight()-1);
-				}
-			}
-		}
+	public void completeBorder(Maze maze, int currentBorder, int borderLength, int vertical) {
+		for (int i = 1; i < borderLength - 1 && currentBorder % 2 == 0; i++)
+			if (Math.random() > .5)
+				if (vertical == 1)
+					maze.change(currentBorder - 1, i);
+				else
+					maze.change(i, currentBorder - 1);
 	}
 
 	/**
@@ -187,7 +179,7 @@ class MazeGenerator {
 					return(pickActiveNode(Mode.RECURSIVE_BACKTRACKER, activeSet));
 				return(pickActiveNode(Mode.PRISM, activeSet));
 			default:
-				throw new Exception("Unknown mode");
+				throw new Exception("Unknown mode"); //TODEL As soon as included in parsing
 		}
 	}
 

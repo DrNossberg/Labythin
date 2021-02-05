@@ -52,17 +52,18 @@ class Printer {
 
 	private void display_colored(Maze maze) throws IOException {
 		StringBuffer strbuf = new StringBuffer();
-		MazeElement onHold = MazeElement.UNDEFINED;
+		MazeElement onHold = maze.getElement(0, 0);
 		MazeElement node;
 
 		for (int y = 0; y < maze.getHeight(); y++) {
-			for (int x = 0; x < maze.getWidth(); x++, strbuf.append(onHold.getChar())) {
+			for (int x = 0; x < maze.getWidth(); x++, strbuf.append(onHold.getChar()))
 				if ((node = maze.getElement(x, y)) != onHold) {
+					// System.out.println( this.colors_dic.get(onHold));
 					this.writer.write(Ansi.AUTO.string("@|" + this.colors_dic.get(onHold) + ' ' + strbuf + "|@"));
+					strbuf.setLength(0);
 					onHold = node;
 				}
-			}
-			this.writer.write('\n');
+			strbuf.append('\n');
 		}
 	}
 

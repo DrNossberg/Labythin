@@ -46,7 +46,8 @@ import java.util.Scanner;
 class Labythin implements Runnable {
 	private enum FILE_STATE {
 		BAD_FILE, GOOD_FILE };
-
+	private MazeGenerator generator;
+	private Printer printer;
 	@Spec CommandSpec spec;
 
 	@Parameters(paramLabel = "width",  defaultValue = "30", description = "width  of the maze to create. default : ${DEFAULT-VALUE}")
@@ -70,17 +71,17 @@ class Labythin implements Runnable {
 
 	@Override
 	public void run() {
-		Printer printer;
-		MazeGenerator generator = new MazeGenerator(((int) width), ((int) height));
-		Maze maze = generator.createMaze();
-	
-		validate();
-		printer = new Printer(f_output, color);
+		Maze maze;
+
+		check_args();
+		this.generator = new MazeGenerator(((int) width), ((int) height));
+		this.printer = new Printer(f_output, color);
+		maze = this.generator.createMaze();
 		generator.generate(maze, mode);
-		printer.display(maze);
+		this.printer.display(maze);
 	}
 
-	private void validate() {
+	private void check_args() {
 		char c = '\0';
 
 		if (width <= 0 || height <= 0)
@@ -104,7 +105,7 @@ class Labythin implements Runnable {
 				if (c == 'n' || c == 'N')
 					throw new ParameterException(spec.commandLine(), "Stopped : " + f_output );
 				if (c != 'y' || c != 'Y')
-					return;
+					break;
 			} while (c != 'y' || c != 'Y' || c != 'n' || c != 'N');
 		}
 	}
