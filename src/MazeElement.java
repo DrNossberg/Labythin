@@ -11,11 +11,11 @@
 
 
 public enum MazeElement {
-    UNDEFINED(''),
+    UNDEFINED('\0'),
     WALL('#'),
-    WALL_UNVISITED('"'),
+    WALL_UNVISITED('\"'),
     WALL_VISITED('_'),
-    PATH('.');
+    PATH('.'),
     PATH_UNVISITED('/'),
     PATH_VISITED('o');
 

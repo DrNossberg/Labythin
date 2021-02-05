@@ -70,11 +70,12 @@ class Labythin implements Runnable {
 
 	@Override
 	public void run() {
-		validate();
-		Printer printer = new Printer(f_output, color);
+		Printer printer;
 		MazeGenerator generator = new MazeGenerator(((int) width), ((int) height));
 		Maze maze = generator.createMaze();
 	
+		validate();
+		printer = new Printer(f_output, color);
 		generator.generate(maze, mode);
 		printer.display(maze);
 	}

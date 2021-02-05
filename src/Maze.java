@@ -65,6 +65,7 @@ public class Maze {
 	public boolean isUnvisited(Point node) {
 		return (this.getValue(node.x, node.y) == MazeElement.PATH_UNVISITED.getChar() ||
 				this.getValue(node.x, node.y) == MazeElement.WALL_UNVISITED.getChar());
+	}
 
 	public boolean isUnvisited(int x, int y) {
 		return (this.getValue(x, y) == MazeElement.PATH_UNVISITED.getChar() ||
@@ -79,7 +80,7 @@ public class Maze {
 		char temp = this.getValue(width, height);
 
 		if (temp == MazeElement.WALL_VISITED.getChar() || 
-			temp == MazeElement.WALL_UNVISITED.getChar());
+			temp == MazeElement.WALL_UNVISITED.getChar())
 			return (MazeElement.WALL);
 		return (MazeElement.PATH);
 	}
