@@ -53,6 +53,8 @@ class Labythin implements Runnable {
 	double width;
 	@Parameters(paramLabel = "height", defaultValue = "30", description = "height of the maze to create. default : ${DEFAULT-VALUE}")
 	double height;
+	@Parameters(paramLabel = "mode", defaultValue = "RECURSIVE_BACKTRACKER", description = "Mode with which the maze will be generated. default : ${DEFAULT-VALUE}")
+	Mode mode;
 	@Option(names = {"-v", "--verbose"}, description = "verbose mode of display")
 	boolean verbose;	
 	@Option(names = {"-c", "--color"}, description = "color the output, makes it look fabulous")
@@ -73,7 +75,7 @@ class Labythin implements Runnable {
 		MazeGenerator generator = new MazeGenerator(((int) width), ((int) height));
 		Maze maze = generator.createMaze();
 	
-		generator.generate(maze);
+		generator.generate(maze, mode);
 		printer.display(maze);
 	}
 

@@ -17,7 +17,6 @@ import java.awt.Point;
 class MazeGenerator {
 	private final int WIDTH = 1;
 	private Random rand = new Random();
-	private ArrayList<Point> activeSet = new ArrayList<Point>(); // TODO move in do_iterative (when things will work again)
 	private Point activeNode; 				
 		//TODO à déplacer dans le maze ? à voir 
 	private Point neighbor;
@@ -57,10 +56,14 @@ class MazeGenerator {
 
 	public void generate(Maze maze, Mode mode) {
 		
-		if (mode == Mode.RECURSIVE )
+		if (mode == Mode.RECURSIVE ) {
+			System.out.println("Generation with recursive algorithm (Recursive Backtracker)");
 			do_recursive(maze, this.activeNode);
-		else
+		}
+		else {
+			System.out.println("Generation with iterative algorithm (" + mode + ")");
 			this.do_iterative(maze, mode);
+		}
 
 		// Complete borders for pair maze
 		this.completeBorder(maze, maze.getHeight(), maze.getWidth(), 0);
@@ -75,7 +78,6 @@ class MazeGenerator {
 	 * Default generation when none mode is given
 	 */
 	public void generate(Maze maze) {
-		System.out.println("here");
 		this.generate(maze, Mode.RECURSIVE_BACKTRACKER);
 	}
 
@@ -99,31 +101,32 @@ class MazeGenerator {
 	 * Iterative algorithms
 	 */
 	public void do_iterative(Maze maze, Mode mode) {
-		// Originel node
-		System.out.println("iterative");
 		System.out.println("Maze of " + this.width + " by " + this.height);
-		this.activeSet.add(this.activeNode);
+		ArrayList<Point> activeSet = new ArrayList<Point>();
+
+		// Originel node
+		activeSet.add(this.activeNode);
 		maze.change(this.activeNode);
 
-		while (!this.activeSet.isEmpty()) {
+		while (!activeSet.isEmpty()) {
 			// Select node from active set
 			try {
-				this.activeNode = this.activeSet.get(pickActiveNode(mode));
+				this.activeNode = activeSet.get(pickActiveNode(mode, activeSet));
 			} catch (Exception e) {
 				System.out.println(e);
 			}
-			maze.change(this.activeNode);
+			maze.change(activeNode);
 
 
 			// Choose a random neighbor node, if none available remove active node from active set
 			if ((neighbor = pickRandomNeighbor(maze, this.activeNode)).equals(new Point(-1, -1))) { // no neighbor
-				this.activeSet.remove(this.activeNode);
+				activeSet.remove(this.activeNode);
 				continue;
 			} else {
 				// inbetween node
 				maze.change((this.activeNode.x + neighbor.x) / 2,
 							(this.activeNode.y + neighbor.y) / 2);
-				this.activeSet.add(neighbor);
+				activeSet.add(neighbor);
 			}
 
 			// neighbor
@@ -138,8 +141,6 @@ class MazeGenerator {
 	 * If none exists, create one
 	 */
 	public void controlExit(Maze maze) {
-		System.out.println((maze.getWidth() - 1 )+ " " + (maze.getHeight() - 1));
-
 		// Node at the right bottom
 		if (maze.isWall(new Point(maze.getWidth() - 1, maze.getHeight() - 1)))
 			maze.change(maze.getWidth()-1, maze.getHeight()-1);
@@ -173,18 +174,18 @@ class MazeGenerator {
 	 * @param mode for choosing the active node
 	 * @return index of the active set where to find the active node
 	 */
-	private int pickActiveNode(Mode mode) throws Exception {
+	private int pickActiveNode(Mode mode, ArrayList<Point> activeSet) throws Exception {
 		switch (mode) {
 			case RECURSIVE_BACKTRACKER :
-				return(this.activeSet.size() - 1);
+				return(activeSet.size() - 1);
 			case PRISM :
-				return(this.rand.nextInt(this.activeSet.size()));
+				return(this.rand.nextInt(activeSet.size()));
 			case OLDEST :
 				return(0);
 			case FIFTY_FITY :
 				if (Math.random() > 0.5) 
-					return(pickActiveNode(Mode.RECURSIVE_BACKTRACKER));
-				return(pickActiveNode(Mode.PRISM));
+					return(pickActiveNode(Mode.RECURSIVE_BACKTRACKER, activeSet));
+				return(pickActiveNode(Mode.PRISM, activeSet));
 			default:
 				throw new Exception("Unknown mode");
 		}

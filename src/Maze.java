@@ -31,7 +31,7 @@ public class Maze {
 	 */
 
 	public void change(int x, int y, MazeElement value) {
-		this.tab[y][x] = value.getChar();
+		this.tab[y][x] = value.getChar(); // PAS TOUCHE ICI !
 	}
 
 	public void change(int x, int y) {
