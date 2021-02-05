@@ -49,9 +49,9 @@ class Labythin implements Runnable {
 
 	@Spec CommandSpec spec;
 
-	@Parameters(paramLabel = "width",  defaultValue = "50", description = "width  of the maze to create. default : ${DEFAULT-VALUE}")
+	@Parameters(paramLabel = "width",  defaultValue = "30", description = "width  of the maze to create. default : ${DEFAULT-VALUE}")
 	double width;
-	@Parameters(paramLabel = "height", defaultValue = "50", description = "height of the maze to create. default : ${DEFAULT-VALUE}")
+	@Parameters(paramLabel = "height", defaultValue = "30", description = "height of the maze to create. default : ${DEFAULT-VALUE}")
 	double height;
 	@Option(names = {"-v", "--verbose"}, description = "verbose mode of display")
 	boolean verbose;	

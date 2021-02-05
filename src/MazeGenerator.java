@@ -17,7 +17,7 @@ import java.awt.Point;
 class MazeGenerator {
 	private final int WIDTH = 1;
 	private Random rand = new Random();
-	private ArrayList<Point> activeSet = new ArrayList<Point>();
+	private ArrayList<Point> activeSet = new ArrayList<Point>(); // TODO move in do_iterative (when things will work again)
 	private Point activeNode; 				
 		//TODO à déplacer dans le maze ? à voir 
 	private Point neighbor;
@@ -68,8 +68,12 @@ class MazeGenerator {
 
 		// Control the exit of the maze
 		this.controlExit(maze);
+
 	}
 
+	/**
+	 * Default generation when none mode is given
+	 */
 	public void generate(Maze maze) {
 		System.out.println("here");
 		this.generate(maze, Mode.RECURSIVE_BACKTRACKER);
@@ -97,11 +101,10 @@ class MazeGenerator {
 	public void do_iterative(Maze maze, Mode mode) {
 		// Originel node
 		System.out.println("iterative");
+		System.out.println("Maze of " + this.width + " by " + this.height);
 		this.activeSet.add(this.activeNode);
 		maze.change(this.activeNode);
 
-
-		// Iterative implementation of the algorithm
 		while (!this.activeSet.isEmpty()) {
 			// Select node from active set
 			try {
@@ -110,6 +113,7 @@ class MazeGenerator {
 				System.out.println(e);
 			}
 			maze.change(this.activeNode);
+
 
 			// Choose a random neighbor node, if none available remove active node from active set
 			if ((neighbor = pickRandomNeighbor(maze, this.activeNode)).equals(new Point(-1, -1))) { // no neighbor
@@ -124,8 +128,9 @@ class MazeGenerator {
 
 			// neighbor
 			maze.change(neighbor);
+
 		}
-	}
+	}	
 
 
 	/**
@@ -134,9 +139,12 @@ class MazeGenerator {
 	 */
 	public void controlExit(Maze maze) {
 		System.out.println((maze.getWidth() - 1 )+ " " + (maze.getHeight() - 1));
+
+		// Node at the right bottom
 		if (maze.isWall(new Point(maze.getWidth() - 1, maze.getHeight() - 1)))
 			maze.change(maze.getWidth()-1, maze.getHeight()-1);
 	
+		// Make path to one of node at the right bottom's direct neighbors
 		if (maze.isWall(new Point(maze.getWidth()-1, maze.getHeight()-2)) &&
 			maze.isWall(new Point(maze.getWidth()-2, maze.getHeight()-1))) {
 				if (Math.random() > .5)
@@ -196,7 +204,7 @@ class MazeGenerator {
 			int y = activeN.y + item[1];
 			if ((x >= 0 && x < maze.getWidth()) && 
 				(y >= 0 &&  y < maze.getHeight()) &&
-				maze.isUnvisited(new Point(x,y)))
+				maze.isUnvisited(x, y))
 				unvisitedNeighbors.add(new Point(x, y));
 		}
 		// define selected unvisited neighbor
