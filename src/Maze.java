@@ -46,21 +46,37 @@ public class Maze {
 		change(node, MazeElement.PATH_UNVISITED);
 	}
 
+	public boolean isPath(Point node) {
+		return (isWall(node.x, node.y));
+	}
+
+	public boolean isPath(int width, int height) {
+		return (getElement(width, height) == MazeElement.PATH);
+	}
+
 	public boolean isWall(Point node) {
 		return (isWall(node.x, node.y));
 	}
 
-	public boolean isWall(int widht, int height) {
-		char temp = this.getValue(width, height);
-		return (temp == MazeElement.WALL_VISITED.getChar() || 
-				temp == MazeElement.WALL_UNVISITED.getChar());
+	public boolean isWall(int width, int height) {
+		return (getElement(width, height) == MazeElement.WALL);		
 	}
+
 	public boolean isUnvisited(Point node) {
 		return (this.getValue(node.x, node.y) == MazeElement.PATH_UNVISITED.getChar() ||
 				this.getValue(node.x, node.y) == MazeElement.WALL_UNVISITED.getChar());
 	}
 
-	public char getValue(int x, int y) { return this.tab[y][x]; }
-	public int getWidth()  {    return this.width;  }
-	public int getHeight() {    return this.height; }
+	public char getValue(int x, int y) 	{ return this.tab[y][x]; }
+	public int 	getWidth()  			{ return this.width; }
+	public int 	getHeight() 			{ return this.height; }
+
+	public MazeElement getElement(int width, int height) {
+		char temp = this.getValue(width, height);
+
+		if (temp == MazeElement.WALL_VISITED.getChar() || 
+			temp == MazeElement.WALL_UNVISITED.getChar());
+			return (MazeElement.WALL);
+		return (MazeElement.PATH);
+	}
 }
