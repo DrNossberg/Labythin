@@ -57,11 +57,8 @@ class Printer {
 		}
 	}
 
-	// public void print(MessageLevel level, Maze maze) {
-	// }
-
 	public void print(MessageLevel level, String message) {
-		if (verbose || level == MessageLevel.IMPORTANT || level == MessageLevel.FATAL)
+		if (verbose)
 			System.out.println(message);
 	}
 
@@ -94,7 +91,7 @@ class Printer {
 		System.out.print("------------------\nPresse [Enter] to continue or insert a new step number : ");
 		do {
 			c = (char) System.in.read();
-			System.out.println("read : " + c);
+			print(MessageLevel.DEBUG, "read : " + c);
 		} while (c != '\n'); //more options to come here
 						// getter ? or function to get user_intput ? 
 	}
