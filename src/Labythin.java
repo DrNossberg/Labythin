@@ -20,9 +20,7 @@ import picocli.CommandLine.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
-
-// import picocli.CommandLine.Model.OptionSpec;
-// import picocli.CommandLine.Model.PositionalParamSpec;
+import java.util.Optional;
 
 @Command(
 		name = "Labythin",
@@ -34,7 +32,7 @@ import java.util.Scanner;
 		sortOptions = false,
 		headerHeading = "%n@|bold,underline Name:|@%n" + //+ 
 				"@|magenta '|@@|white ##|@@|magenta ::::::::::'|@@|white ###|@@|magenta ::::'|@@|white ########|@@|magenta ::'|@@|white ##|@@|magenta :::'|@@|white ##|@@|magenta :'|@@|white ########|@@|magenta :'|@@|white ##|@@|magenta ::::'|@@|white ##|@@|magenta :'|@@|white ####|@@|magenta :'|@@|white ##|@@|magenta :::|@@|black  |@@|white ##|@@|magenta :%n|@@|black  |@@|white ##|@@|magenta :::::::::'|@@|white ##|@@|black  |@@|white ##|@@|magenta :::|@@|black  |@@|white ##|@@|magenta ....|@@|black  |@@|white ##|@@|magenta :.|@@|black  |@@|white ##|@@|magenta :'|@@|white ##|@@|magenta ::...|@@|black  |@@|white ##|@@|magenta ..::|@@|black  |@@|white ##|@@|magenta ::::|@@|black  |@@|white ##|@@|magenta :.|@@|black  |@@|white ##|@@|magenta ::|@@|black  |@@|white ###|@@|magenta ::|@@|black  |@@|white ##|@@|magenta :%n|@@|black  |@@|white ##|@@|magenta ::::::::'|@@|white ##|@@|magenta :.|@@|black  |@@|white ##|@@|magenta ::|@@|black  |@@|white ##|@@|magenta ::::|@@|black  |@@|white ##|@@|magenta ::.|@@|black  |@@|white ####|@@|magenta ::::::|@@|black  |@@|white ##|@@|magenta ::::|@@|black  |@@|white ##|@@|magenta ::::|@@|black  |@@|white ##|@@|magenta ::|@@|black  |@@|white ##|@@|magenta ::|@@|black  |@@|white ####|@@|magenta :|@@|black  |@@|white ##|@@|magenta :%n|@@|black  |@@|white ##|@@|magenta :::::::'|@@|white ##|@@|magenta :::.|@@|black  |@@|white ##|@@|magenta :|@@|black  |@@|white ########|@@|magenta ::::.|@@|black  |@@|white ##|@@|magenta :::::::|@@|black  |@@|white ##|@@|magenta ::::|@@|black  |@@|white #########|@@|magenta ::|@@|black  |@@|white ##|@@|magenta ::|@@|black  |@@|white ##|@@|black  |@@|white ##|@@|black  |@@|white ##|@@|magenta :%n|@@|black  |@@|white ##|@@|magenta :::::::|@@|black  |@@|white #########|@@|magenta :|@@|black  |@@|white ##|@@|magenta ....|@@|black  |@@|white ##|@@|magenta ::::|@@|black  |@@|white ##|@@|magenta :::::::|@@|black  |@@|white ##|@@|magenta ::::|@@|black  |@@|white ##|@@|magenta ....|@@|black  |@@|white ##|@@|magenta ::|@@|black  |@@|white ##|@@|magenta ::|@@|black  |@@|white ##|@@|magenta .|@@|black  |@@|white ####|@@|magenta :%n|@@|black  |@@|white ##|@@|magenta :::::::|@@|black  |@@|white ##|@@|magenta ....|@@|black  |@@|white ##|@@|magenta :|@@|black  |@@|white ##|@@|magenta ::::|@@|black  |@@|white ##|@@|magenta ::::|@@|black  |@@|white ##|@@|magenta :::::::|@@|black  |@@|white ##|@@|magenta ::::|@@|black  |@@|white ##|@@|magenta ::::|@@|black  |@@|white ##|@@|magenta ::|@@|black  |@@|white ##|@@|magenta ::|@@|black  |@@|white ##|@@|magenta :.|@@|black  |@@|white ###|@@|magenta :%n|@@|black  |@@|white ########|@@|magenta :|@@|black  |@@|white ##|@@|magenta ::::|@@|black  |@@|white ##|@@|magenta :|@@|black  |@@|white ########|@@|magenta :::::|@@|black  |@@|white ##|@@|magenta :::::::|@@|black  |@@|white ##|@@|magenta ::::|@@|black  |@@|white ##|@@|magenta ::::|@@|black  |@@|white ##|@@|magenta :'|@@|white ####|@@|magenta :|@@|black  |@@|white ##|@@|magenta ::.|@@|black  |@@|white ##|@@|magenta :%n........::..:::::..::........::::::..::::::::..:::::..:::::..::....::..::::..::%n|@",
-		header = "%n%n@|bold,underline Usage:|@",
+		header = "%n@|bold,underline Usage:|@",
 		synopsisHeading = "",
 		descriptionHeading = "%n@|bold,underline Description:|@%n",
 		description = "Create mazes using the growing tree algorithme.%n",
@@ -48,22 +46,29 @@ class Labythin implements Runnable {
 		BAD_FILE, GOOD_FILE };
 	private MazeGenerator generator;
 	private Printer printer;
+
 	@Spec CommandSpec spec;
 
 	@Parameters(paramLabel = "width",  defaultValue = "30", description = "width  of the maze to create. default : ${DEFAULT-VALUE}")
 	double width;
 	@Parameters(paramLabel = "height", defaultValue = "30", description = "height of the maze to create. default : ${DEFAULT-VALUE}")
 	double height;
-	@Parameters(paramLabel = "mode", defaultValue = "RECURSIVE_BACKTRACKER", description = "Mode with which the maze will be generated. default : ${DEFAULT-VALUE}")
-	Mode mode;
-	@Option(names = {"-v", "--verbose"}, description = "verbose mode of display")
+	@Option(names = {"-a", "--algorithme"}, defaultValue = "RECURSIVE_BACKTRACKER", description = "Mode with which the maze will be generated. default : ${DEFAULT-VALUE}")
+	Mode mode; //here, diff between iteratif/recursif, check for both -> if iteratif, option on with algorithme to use ? 
+	// @Option(names = {"-", "--algorithme"}, defaultValue = "RECURSIVE_BACKTRACKER", description = " default : ${DEFAULT-VALUE}")
+	// Mode mode;
+	@Option(names = {"-s", "--step"},  arity = "0..1", fallbackValue = "1", description = "[NOT IMPLEMENTED] will display the maze at every step of the maze's creation")
+    int step;
+	@Option(names = {"-v", "--verbose"}, description = "[NOT IMPLEMENTED] verbose mode of display")
 	boolean verbose;	
 	@Option(names = {"-c", "--color"}, description = "color the output, makes it look fabulous")
 	boolean color;
-	@Option(names = {"-f", "--file"}, description = "file to read the maze from", paramLabel =  "FILE")
+	@Option(names = {"-f", "--file"}, description = "[NOT tested]file to read the maze from", paramLabel =  "FILE")
 	File f_intput;
-	@Option(names = {"-o", "--output"}, description = "file to output the maze to", paramLabel = "FILE")
+	@Option(names = {"-o", "--output"}, description = "[NOT tested] file to output the maze to", paramLabel = "FILE")
 	File f_output;
+	@Option(names = {"-t", "--time"}, description = "[NOT WORKING] time took to generate the maze", paramLabel = "FILE")
+	int time;
 
 	public static void main(String[] args) {
 		System.exit(new CommandLine(new Labythin()).execute(args));
@@ -74,10 +79,11 @@ class Labythin implements Runnable {
 		Maze maze;
 
 		check_args();
-		this.generator = new MazeGenerator(((int) width), ((int) height));
-		this.printer = new Printer(f_output, color);
+		this.printer = new Printer(f_output, color, verbose, step);
+		this.generator = new MazeGenerator(this.printer, ((int) width), ((int) height));
 		maze = this.generator.createMaze();
-		generator.generate(maze, mode);
+		this.printer.print(MessageLevel.INFO, toString());
+		this.generator.generate(maze, mode);
 		this.printer.display(maze);
 	}
 
@@ -94,19 +100,17 @@ class Labythin implements Runnable {
 			throw new ParameterException(spec.commandLine(),
 				"File issue : file " + f_intput + " isn't well formatted."); //maybe add the display of an example here | ill' depend of the format
 		if (f_output != null && ! f_output.exists()) {
+			System.out.println("Warning : File " + f_output + " already exist. Do you wants yo override ? y/N: ");
 			do {
-				System.out.println("Warning : File " + f_output + " already exist. Do you wants yo override ? y/N: ");
 				try {
 					c = (char) System.in.read();
 				} catch (IOException e) {
 					throw new ParameterException(spec.commandLine(),
 						"Issue when reading the standard intput.");
 				}
-				if (c == 'n' || c == 'N')
-					throw new ParameterException(spec.commandLine(), "Stopped : " + f_output );
-				if (c != 'y' || c != 'Y')
-					break;
 			} while (c != 'y' || c != 'Y' || c != 'n' || c != 'N');
+			if (c == 'n' || c == 'N')
+				throw new ParameterException(spec.commandLine(), "Stopped by user : File " + f_output + " won't be overwrite." );
 		}
 	}
 
@@ -116,8 +120,18 @@ class Labythin implements Runnable {
 		return (FILE_STATE.GOOD_FILE);
 	}
 
-	private void dump() {
-		System.out.println(
+	@Override
+	public String toString() {
+			// double width;
+			// double height;
+			// Mode mode; //here, diff between iteratif/recursif, check for both -> if iteratif, option on with algorithme to use ? 
+			// int step;
+			// boolean verbose;	
+			// boolean color;
+			// File f_intput;
+			// File f_output;
+			// int time;
+		return (
 			"width   :\t" + width + "\n" +
 			"height  :\t" + height + "\n" +
 			"verbose :\t" + verbose + "\n" +
@@ -126,3 +140,6 @@ class Labythin implements Runnable {
 			);
 	}
 }
+
+// import picocli.CommandLine.Model.OptionSpec;
+// import picocli.CommandLine.Model.PositionalParamSpec;

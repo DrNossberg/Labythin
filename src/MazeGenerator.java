@@ -16,17 +16,19 @@ import java.awt.Point;
 
 class MazeGenerator {
 	private Random rand = new Random();
+	private Printer printer;
 	private Point activeNode; 				
 		//TODO à déplacer dans le maze ? à voir 
 	private Point neighbor;
 	private int width;
 	private int height;
 
-	public MazeGenerator(int width, int height) {
+	public MazeGenerator(Printer printer, int width, int height) {
 		this.activeNode =  new Point(0, 0);
 			//IDEA 0,0 pourrait changer, à passer en arg à la construction du maze. à voir avec le parsing
 		this.width = width;
 		this.height = height;
+		this.printer = printer;
 	}
 
 	public Maze createMaze() {
@@ -54,23 +56,14 @@ class MazeGenerator {
 		 */
 
 	public void generate(Maze maze, Mode mode) {
-		
 		if (mode == Mode.RECURSIVE ) {
-			System.out.println("Generation with recursive algorithm (Recursive Backtracker)");
 			do_recursive(maze, this.activeNode);
-		}
-		else {
-			System.out.println("Generation with iterative algorithm (" + mode + ")");
+		} else {
 			this.do_iterative(maze, mode);
 		}
-
-		// Complete borders for pair maze
 		this.completeBorder(maze, maze.getHeight(), maze.getWidth(), 0);
 		this.completeBorder(maze, maze.getWidth(),  maze.getHeight(), 1);
-
-		// Control the exit of the maze
 		this.controlExit(maze);
-
 	}
 
 	/**
@@ -100,7 +93,6 @@ class MazeGenerator {
 	 * Iterative algorithms
 	 */
 	public void do_iterative(Maze maze, Mode mode) {
-		System.out.println("Maze of " + this.width + " by " + this.height);
 		ArrayList<Point> activeSet = new ArrayList<Point>();
 
 		// Originel node
@@ -115,7 +107,6 @@ class MazeGenerator {
 				System.out.println(e);
 			}
 			maze.change(activeNode);
-
 
 			// Choose a random neighbor node, if none available remove active node from active set
 			if ((neighbor = pickRandomNeighbor(maze, this.activeNode)).equals(new Point(-1, -1))) { // no neighbor
