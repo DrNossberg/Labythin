@@ -6,15 +6,19 @@
 **    Erin      Bernardoni
 **    Antoine   Orion
 ** File description :
-**    Enumeration of the possible states of a node in the maze
+**    Enumeration of the possible variations of the growing tree use to create the maze
+**      1) Recursive Backtracker :
+**          (newest)
+**      2) Prism
+**          (random)
+**      3) OLDEST :
+**      4) 50/50 :
+**      
 */
 
-
 public enum Mode {
-    //1: Recursive Backtracker (newest) 2: Prism (random) 3: oldest 4             50/50
     RECURSIVE_BACKTRACKER,
     PRISM,
     OLDEST,
     FIFTY_FITY,
-    RECURSIVE;
 }

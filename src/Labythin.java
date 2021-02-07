@@ -53,13 +53,16 @@ class Labythin implements Runnable {
 	double width;
 	@Parameters(paramLabel = "height", defaultValue = "30", description = "height of the maze to create. default : ${DEFAULT-VALUE}")
 	double height;
-	@Option(names = {"-a", "--algorithme"}, defaultValue = "RECURSIVE_BACKTRACKER", description = "Mode with which the maze will be generated. default : ${DEFAULT-VALUE}")
+	@Option(names = {"-i", "--iterativ"}, description = "Use the iterative version of the algorithme instead of the recusive one")
+	boolean iterativ;
+	@Option(names = {"-a", "--algorithme"}, defaultValue = "RECURSIVE_BACKTRACKER",
+		description = "Mode with which the maze will be generated\n" +
+		"values : ${COMPLETION-CANDIDATES}\n" +
+		"default : ${DEFAULT-VALUE} ")
 	Mode mode; //here, diff between iteratif/recursif, check for both -> if iteratif, option on with algorithme to use ? 
-	// @Option(names = {"-", "--algorithme"}, defaultValue = "RECURSIVE_BACKTRACKER", description = " default : ${DEFAULT-VALUE}")
-	// Mode mode;
-	@Option(names = {"-s", "--step"},  arity = "0..1", fallbackValue = "1", description = "[NOT IMPLEMENTED] will display the maze at every step of the maze's creation")
-    int step;
-	@Option(names = {"-v", "--verbose"}, description = "[NOT IMPLEMENTED] verbose mode of display")
+	@Option(names = {"-s", "--step"},  arity = "0..1", fallbackValue = "1", description = "will display the maze at every step of the maze's creation")
+	int step;
+	@Option(names = {"-v", "--verbose"}, description = "[NOT FULLY IMPLEMENTED] verbose mode of display")
 	boolean verbose;	
 	@Option(names = {"-c", "--color"}, description = "color the output, makes it look fabulous")
 	boolean color;
@@ -67,7 +70,7 @@ class Labythin implements Runnable {
 	File f_intput;
 	@Option(names = {"-o", "--output"}, description = "[NOT tested] file to output the maze to", paramLabel = "FILE")
 	File f_output;
-	@Option(names = {"-t", "--time"}, description = "[NOT WORKING] time took to generate the maze", paramLabel = "FILE")
+	@Option(names = {"-t", "--time"}, description = "[NOT IMPLEMENTED] time took to generate the maze", paramLabel = "FILE")
 	int time;
 
 	public static void main(String[] args) {
@@ -83,7 +86,7 @@ class Labythin implements Runnable {
 		this.generator = new MazeGenerator(this.printer, ((int) width), ((int) height));
 		maze = this.generator.createMaze();
 		this.printer.print(MessageLevel.INFO, toString());
-		this.generator.generate(maze, mode);
+		this.generator.generate(maze, iterativ, mode);
 		this.printer.display(maze);
 	}
 
@@ -136,7 +139,8 @@ class Labythin implements Runnable {
 			"height  :\t" + height + "\n" +
 			"verbose :\t" + verbose + "\n" +
 			"color   :\t" + color + "\n" +
-			"f_intput : " + f_intput 
+			"f_intput : " + f_intput + "\n" +
+			"mode : \t" + mode
 			);
 	}
 }

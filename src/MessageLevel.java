@@ -11,6 +11,7 @@
 
 
 enum MessageLevel {
+    FATAL,
     IMPORTANT,
     INFO
 }
