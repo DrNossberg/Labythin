@@ -30,7 +30,7 @@ EXEFLAGS	:= -cp $(OBJ_DIR)
 all		: $(NAME)
 
 $(NAME)	: $(OBJ)
-	$(EXEC) $(EXEFLAGS):$(LFLAGS) $(NAME)
+# 	$(EXEC) $(EXEFLAGS):$(LFLAGS) $(NAME)
 
 
 $(OBJ_DIR)/%.$(OBJ_TYPE) : $(SRC_DIR)/%.$(FILE_TYPE)
