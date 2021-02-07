@@ -19,6 +19,8 @@ import picocli.CommandLine.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Scanner;
 import java.util.Optional;
 
@@ -79,6 +81,7 @@ class Labythin implements Runnable {
 
 	@Override
 	public void run() {
+		Instant start = Instant.now();
 		Maze maze;
 
 		check_args();
@@ -88,6 +91,9 @@ class Labythin implements Runnable {
 		this.printer.print(MessageLevel.INFO, toString());
 		this.generator.generate(maze, iterativ, mode);
 		this.printer.display(maze);
+		
+		Instant finish = Instant.now();
+		System.out.println(Duration.between(start, finish).toMillis());
 	}
 
 	private void check_args() {
