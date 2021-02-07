@@ -32,6 +32,7 @@ class Printer {
 
 	public Printer(File file, boolean color, boolean verbose, int step) {
 		this.file = file;
+		this.verbose = verbose;
 		this.color = color;
 		this.colors_dic = new Hashtable<Character, String>();
 		this.stepping = step;
@@ -45,29 +46,40 @@ class Printer {
 	    this.colors_dic.put(MazeElement.PATH_VISITED.getChar(),		"blue");
 		// instead of red|green, we can put alot of things here, see 
 		// last comment for more infos -> option...?
-	}
 
-	public void print(MessageLevel level, String message) {
-		if (verbose || level == MessageLevel.IMPORTANT)
-			System.out.println(message);
-	}
-
-	public void display(Maze maze) {
-		try {
+	    try {
 			if (file == null)
 				this.writer = new BufferedWriter(new OutputStreamWriter(System.out));
 			else
 				this.writer = new BufferedWriter(new FileWriter(file)); //needs to check if we can write in the file
-			stepDisplay(maze);
-			this.writer.close();
 		} catch (IOException e) {
-			System.out.println(e);
+			print(MessageLevel.FATAL, e.getMessage());
+		}
+	}
+
+	// public void print(MessageLevel level, Maze maze) {
+	// }
+
+	public void print(MessageLevel level, String message) {
+		if (verbose || level == MessageLevel.IMPORTANT || level == MessageLevel.FATAL)
+			System.out.println(message);
+	}
+
+	// public void print(Maze maze) {
+	public void display(Maze maze) {
+		try {
+			stepDisplay(maze);
+		} catch (IOException e) {
+			print(MessageLevel.FATAL, e.getMessage());
 		}
 	}
 
 	public void stepDisplay(Maze maze) throws IOException {
 		char c = '\0';
 
+		this.print(MessageLevel.FATAL, this.stepping + " step bro : " + this.step_bro);
+		if (this.stepping < 0)
+			return;
 		if (this.stepping > 0 && step_bro < this.stepping) {
 			this.step_bro += 1;
 			return;
@@ -79,13 +91,12 @@ class Printer {
 		} else
 			displayBlakAndWhite(maze, stepping > 0);
 		this.writer.flush();
-		if (this.stepping <= 0)
-			return;
-		System.out.print("\n------------------\nPresse [Enter] to continue or insert a new step number : ");
+		System.out.print("------------------\nPresse [Enter] to continue or insert a new step number : ");
 		do {
 			c = (char) System.in.read();
 			System.out.println("read : " + c);
 		} while (c != '\n'); //more options to come here
+						// getter ? or function to get user_intput ? 
 	}
 
 	private void displayColor(Maze maze, boolean verbose) throws IOException {

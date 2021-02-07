@@ -55,39 +55,32 @@ class MazeGenerator {
 		 * Run the maze generation
 		 */
 
-	public void generate(Maze maze, Mode mode) {
-		if (mode == Mode.RECURSIVE ) {
-			do_recursive(maze, this.activeNode);
-		} else {
+	public void generate(Maze maze, boolean iterative, Mode mode) {
+		this.printer.print(MessageLevel.INFO, "Generating the maze...");
+		if (iterative)
 			this.do_iterative(maze, mode);
-		}
+		else
+			do_recursive(maze, this.activeNode);
 		this.completeBorder(maze, maze.getHeight(), maze.getWidth(), 0);
 		this.completeBorder(maze, maze.getWidth(),  maze.getHeight(), 1);
 		this.controlExit(maze);
 	}
 
-	/**
-	 * Default generation when none mode is given
-	 */
-	public void generate(Maze maze) {
-		this.generate(maze, Mode.RECURSIVE_BACKTRACKER);
-	}
 
-	
 	/**
 	 * Recursive algorithm for Recursive Backtracker mode
 	 */
 	public void do_recursive(Maze maze, Point activeNode) {
 		Point next = null;
 
+		this.printer.display(maze);
 		maze.change(activeNode, MazeElement.PATH_VISITED);
-		while ((next = this.pickRandomNeighbor(maze, activeNode)) != new Point(-1, -1)) {
+		while (!(next = this.pickRandomNeighbor(maze, activeNode)).equals(new Point(-1, -1))) {
 			maze.change((activeNode.x + next.x) / 2,
 						(activeNode.y + next.y) / 2);
 			do_recursive(maze, next);
 		}
 	}
-
 
 	/**
 	 * Iterative algorithms
@@ -97,17 +90,17 @@ class MazeGenerator {
 
 		// Originel node
 		activeSet.add(this.activeNode);
+		this.printer.display(maze);
 		maze.change(this.activeNode);
-
 		while (!activeSet.isEmpty()) {
+			this.printer.display(maze);
 			// Select node from active set
 			try {
 				this.activeNode = activeSet.get(pickActiveNode(mode, activeSet));
 			} catch (Exception e) {
-				System.out.println(e);
+				this.printer.print(MessageLevel.FATAL, e.getMessage());
 			}
 			maze.change(activeNode);
-
 			// Choose a random neighbor node, if none available remove active node from active set
 			if ((neighbor = pickRandomNeighbor(maze, this.activeNode)).equals(new Point(-1, -1))) { // no neighbor
 				activeSet.remove(this.activeNode);
@@ -118,10 +111,8 @@ class MazeGenerator {
 							(this.activeNode.y + neighbor.y) / 2);
 				activeSet.add(neighbor);
 			}
-
 			// neighbor
 			maze.change(neighbor);
-
 		}
 	}	
 
@@ -170,7 +161,7 @@ class MazeGenerator {
 					return(pickActiveNode(Mode.RECURSIVE_BACKTRACKER, activeSet));
 				return(pickActiveNode(Mode.PRISM, activeSet));
 			default:
-				throw new Exception("Unknown mode"); //TODEL As soon as included in parsing
+				throw new Exception("Issue when picking active node : mode unknow");
 		}
 	}
 
