@@ -7,13 +7,13 @@
 **    Antoine   Orion
 ** File description :
 **    Enumeration of the possible variations of the growing tree use to create the maze
-**      1) Recursive Backtracker :
+**      RECURSIVE_BACKTRACKER :
 **          (newest)
-**      2) Prism
+**      PRISM :
 **          (random)
-**      3) OLDEST :
-**      4) 50/50 :
-**      
+**      OLDEST :
+**      FIFTY_FITY :
+**          
 */
 
 public enum Mode {

@@ -26,7 +26,7 @@ import java.util.Optional;
 
 @Command(
 		name = "Labythin",
-		version = 	{"Labythin 2021",
+		version = 	{"Labythin 2021 2.0",
 					"Picocli " + picocli.CommandLine.VERSION,
 					"JVM: ${java.version} (${java.vendor} ${java.vm.name} ${java.vm.version})",
 					"OS: ${os.name} ${os.version} ${os.arch}"},
@@ -47,7 +47,6 @@ class Labythin implements Runnable {
 	private enum FILE_STATE {
 		BAD_FILE, GOOD_FILE };
 	private MazeGenerator generator;
-	private Printer printer;
 
 	@Spec CommandSpec spec;
 
@@ -62,7 +61,7 @@ class Labythin implements Runnable {
 		"values : ${COMPLETION-CANDIDATES}\n" +
 		"default : ${DEFAULT-VALUE} ")
 	Mode mode; //here, diff between iteratif/recursif, check for both -> if iteratif, option on with algorithme to use ? 
-	@Option(names = {"-s", "--step"},  arity = "0..1", fallbackValue = "1", description = "will display the maze at every step of the maze's creation")
+	@Option(names = {"-s", "--step"},  arity = "0..1", defaultValue = "0", fallbackValue = "1", description = "will display the maze at every step of the maze's creation")
 	int step;
 	@Option(names = {"-v", "--verbose"}, description = "[NOT FULLY IMPLEMENTED] verbose mode of display")
 	boolean verbose;	
@@ -72,8 +71,8 @@ class Labythin implements Runnable {
 	File f_intput;
 	@Option(names = {"-o", "--output"}, description = "[NOT tested] file to output the maze to", paramLabel = "FILE")
 	File f_output;
-	@Option(names = {"-t", "--time"}, description = "[NOT IMPLEMENTED] time took to generate the maze", paramLabel = "FILE")
-	int time;
+	// @Option(names = {"-t", "--time"}, description = "[NOT IMPLEMENTED] time took to generate the maze", paramLabel = "FILE")
+	// int time;
 
 	public static void main(String[] args) {
 		System.exit(new CommandLine(new Labythin()).execute(args));
@@ -85,15 +84,21 @@ class Labythin implements Runnable {
 		Maze maze;
 
 		check_args();
-		this.printer = new Printer(f_output, color, verbose, step);
-		this.generator = new MazeGenerator(this.printer, ((int) width), ((int) height));
-		maze = this.generator.createMaze();
-		this.printer.print(MessageLevel.INFO, toString());
-		this.generator.generate(maze, iterativ, mode);
-		this.printer.display(maze);
-		
-		Instant finish = Instant.now();
-		System.out.println(Duration.between(start, finish).toMillis());
+		try (Printer printer = new Printer(f_output, color, verbose, step)) {
+			this.generator = new MazeGenerator(printer, ((int) width), ((int) height));
+			maze = this.generator.createMaze();
+			printer.print(MessageLevel.INFO, toString());
+			this.generator.generate(maze, iterativ, mode);
+
+			printer.display(maze);
+
+
+		} catch (IOException e) {
+			System.out.println(e);
+		}
+
+		// Instant finish = Instant.now();
+		// System.out.println(Duration.between(start, finish).toMillis());
 	}
 
 	private void check_args() {
@@ -131,22 +136,15 @@ class Labythin implements Runnable {
 
 	@Override
 	public String toString() {
-			// double width;
-			// double height;
-			// Mode mode; //here, diff between iteratif/recursif, check for both -> if iteratif, option on with algorithme to use ? 
-			// int step;
-			// boolean verbose;	
-			// boolean color;
-			// File f_intput;
-			// File f_output;
-			// int time;
 		return (
 			"width   :\t" + width + "\n" +
 			"height  :\t" + height + "\n" +
 			"verbose :\t" + verbose + "\n" +
 			"color   :\t" + color + "\n" +
 			"f_intput : " + f_intput + "\n" +
-			"mode : \t" + mode
+			"f_output : " + f_output + "\n" +
+			"mode : \t" + mode + "\n" +
+			"step :\t" + step
 			);
 	}
 }

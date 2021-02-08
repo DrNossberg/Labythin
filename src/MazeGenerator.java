@@ -60,7 +60,7 @@ class MazeGenerator {
 		if (iterative)
 			this.do_iterative(maze, mode);
 		else
-			do_recursive(maze, this.activeNode);
+			this.do_recursive(maze, this.activeNode);
 		this.completeBorder(maze, maze.getHeight(), maze.getWidth(), 0);
 		this.completeBorder(maze, maze.getWidth(),  maze.getHeight(), 1);
 		this.controlExit(maze);
@@ -73,7 +73,7 @@ class MazeGenerator {
 	public void do_recursive(Maze maze, Point activeNode) {
 		Point next = null;
 
-		this.printer.display(maze);
+		this.printer.stepDisplay(maze);
 		maze.change(activeNode, MazeElement.PATH_VISITED);
 		while (!(next = this.pickRandomNeighbor(maze, activeNode)).equals(new Point(-1, -1))) {
 			maze.change((activeNode.x + next.x) / 2,
@@ -90,10 +90,10 @@ class MazeGenerator {
 
 		// Originel node
 		activeSet.add(this.activeNode);
-		this.printer.display(maze);
+		this.printer.stepDisplay(maze);
 		maze.change(this.activeNode);
 		while (!activeSet.isEmpty()) {
-			this.printer.display(maze);
+			this.printer.stepDisplay(maze);
 			// Select node from active set
 			try {
 				this.activeNode = activeSet.get(pickActiveNode(mode, activeSet));

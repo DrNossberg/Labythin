@@ -24,7 +24,7 @@ SRC			:=$(wildcard $(SRC_DIR)/*.$(FILE_TYPE))
 OBJ			:= $(SRC:$(SRC_DIR)/%.$(FILE_TYPE)=$(OBJ_DIR)/%.$(OBJ_TYPE))
 
 LFLAGS		:= $(LIB_DIR)/picocli-4.6.1.jar
-CFLAGS		:= -cp $(SRC_DIR)
+CFLAGS		:= -Xlint:deprecation -cp $(SRC_DIR)
 EXEFLAGS	:= -cp $(OBJ_DIR)
 
 all		: $(NAME)
