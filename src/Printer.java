@@ -36,11 +36,11 @@ class Printer implements AutoCloseable {
 		this.step_bro = 0;
 
 		this.colors_dic.put(MazeElement.WALL.getChar(),				"white");
-	    this.colors_dic.put(MazeElement.WALL_UNVISITED.getChar(),	"green");
+	    this.colors_dic.put(MazeElement.WALL_UNVISITED.getChar(),	"white");
 	    this.colors_dic.put(MazeElement.WALL_VISITED.getChar(),		"white");
-	    this.colors_dic.put(MazeElement.PATH.getChar(),				"bold,magenta");
+	    this.colors_dic.put(MazeElement.PATH.getChar(),				"yellow");
 	    this.colors_dic.put(MazeElement.PATH_UNVISITED.getChar(),	"red");
-	    this.colors_dic.put(MazeElement.PATH_VISITED.getChar(),		"blue");
+	    this.colors_dic.put(MazeElement.PATH_VISITED.getChar(),		"bold,cyan");
 		// instead of red|green, we can put alot of things here, see 
 		// last comment for more infos -> option...?
 
@@ -78,12 +78,12 @@ class Printer implements AutoCloseable {
 			return;
 		}
 		this.print(MessageLevel.INFO, "displayed every " + this.stepping + " loop.");
-		this.print(MessageLevel.IMPORTANT, "------------------\n");
+		// this.print(MessageLevel.IMPORTANT, "------------------\n");
 		this.step_bro = 0;
 		this.display(maze);
 		try {
-			this.print(MessageLevel.IMPORTANT, "------------------\n");
-			this.print(MessageLevel.IMPORTANT, "Presse [Enter] to continue or insert a new step number : ");
+			// this.print(MessageLevel.IMPORTANT, "------------------\n");
+			// this.print(MessageLevel.IMPORTANT, "Presse [Enter] to continue or insert a new step number : ");
 			do {
 				c = (char) System.in.read();
 				print(MessageLevel.DEBUG, "read : " + c);

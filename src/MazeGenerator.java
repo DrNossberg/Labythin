@@ -74,12 +74,17 @@ class MazeGenerator {
 		Point next = null;
 
 		this.printer.stepDisplay(maze);
-		maze.change(activeNode, MazeElement.PATH_VISITED);
+		maze.change(activeNode);
 		while (!(next = this.pickRandomNeighbor(maze, activeNode)).equals(new Point(-1, -1))) {
+			this.printer.stepDisplay(maze);
 			maze.change((activeNode.x + next.x) / 2,
-						(activeNode.y + next.y) / 2);
+						(activeNode.y + next.y) / 2, MazeElement.PATH);
 			do_recursive(maze, next);
+			this.printer.stepDisplay(maze);
+			
 		}
+		maze.change(activeNode, MazeElement.PATH);
+		this.printer.stepDisplay(maze);
 	}
 
 	/**
@@ -125,13 +130,13 @@ class MazeGenerator {
 		int w = maze.getWidth() - 1;
 		int h = maze.getHeight() - 1;
 
-		maze.change(w, h);
+		maze.change(w, h, MazeElement.PATH);
 		// Make path to one of node at the right bottom's direct neighbors
 		if (maze.isWall(w, h - 1) && maze.isWall(w - 1, h))
 			if (Math.random() > .5)
-				maze.change(w, h - 1);
+				maze.change(w, h - 1, MazeElement.PATH);
 			else
-				maze.change(w - 1, h);
+				maze.change(w - 1, h, MazeElement.PATH);
 	}
 
 	public void completeBorder(Maze maze, int currentBorder, int borderLength, int vertical) {
@@ -178,8 +183,8 @@ class MazeGenerator {
 			int x = activeN.x + item[0];
 			int y = activeN.y + item[1];
 			if ((x >= 0 && x < maze.getWidth()) && 
-				(y >= 0 &&  y < maze.getHeight()) &&
-				maze.isUnvisited(x, y))
+				(y >= 0 &&  y < maze.getHeight())
+				&& maze.isUnvisited(x, y))
 				unvisitedNeighbors.add(new Point(x, y));
 		}
 		// define selected unvisited neighbor

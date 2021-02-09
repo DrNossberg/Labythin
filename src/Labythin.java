@@ -50,10 +50,10 @@ class Labythin implements Runnable {
 
 	@Spec CommandSpec spec;
 
-	@Parameters(paramLabel = "width",  defaultValue = "30", description = "width  of the maze to create. default : ${DEFAULT-VALUE}")
-	double width;
-	@Parameters(paramLabel = "height", defaultValue = "30", description = "height of the maze to create. default : ${DEFAULT-VALUE}")
-	double height;
+	@Parameters(paramLabel = "width",  defaultValue = "5", description = "width  of the maze to create. default : ${DEFAULT-VALUE}")
+	int width;
+	@Parameters(paramLabel = "height", defaultValue = "5", description = "height of the maze to create. default : ${DEFAULT-VALUE}")
+	int height;
 	@Option(names = {"-i", "--iterativ"}, description = "Use the iterative version of the algorithme instead of the recusive one")
 	boolean iterativ;
 	@Option(names = {"-a", "--algorithme"}, defaultValue = "RECURSIVE_BACKTRACKER",
@@ -85,7 +85,7 @@ class Labythin implements Runnable {
 
 		check_args();
 		try (Printer printer = new Printer(f_output, color, verbose, step)) {
-			this.generator = new MazeGenerator(printer, ((int) width), ((int) height));
+			this.generator = new MazeGenerator(printer, (width), (height));
 			maze = this.generator.createMaze();
 			printer.print(MessageLevel.INFO, toString());
 			this.generator.generate(maze, iterativ, mode);
