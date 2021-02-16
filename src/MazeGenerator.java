@@ -139,13 +139,26 @@ class MazeGenerator {
 				maze.change(w - 1, h, MazeElement.PATH);
 	}
 
+	/**
+	 * Complete the right or bottom border
+	 * @param maze 
+	 * @param currentBorder size of side to check
+	 * @param borderLength size of the border to complete
+	 * @param vertical 1 if working on vertical, 0 if not
+	 */
 	public void completeBorder(Maze maze, int currentBorder, int borderLength, int vertical) {
 		for (int i = 1; i < borderLength - 1 && currentBorder % 2 == 0; i++)
 			if (Math.random() > .5)
-				if (vertical == 1)
+				if (vertical == 1 && !maze.isPath(currentBorder - 2, i)) // working on right side
+				{
 					maze.change(currentBorder - 1, i);
-				else
+					maze.change(currentBorder - 2, i);
+				}	
+				else if (!maze.isPath(i, currentBorder - 2)) // working on bottom side
+				{
 					maze.change(i, currentBorder - 1);
+					maze.change(i, currentBorder - 2);
+				}	
 	}
 
 	/**

@@ -50,16 +50,16 @@ public class Maze {
 		return (isWall(node.x, node.y));
 	}
 
-	public boolean isPath(int width, int height) {
-		return (getElement(width, height) == MazeElement.PATH);
+	public boolean isPath(int x, int y) {
+		return (getElement(x, y) == MazeElement.PATH);
 	}
 
 	public boolean isWall(Point node) {
 		return (isWall(node.x, node.y));
 	}
 
-	public boolean isWall(int width, int height) {
-		return (getElement(width, height) == MazeElement.WALL);		
+	public boolean isWall(int x, int y) {
+		return (getElement(x, y) == MazeElement.WALL);		
 	}
 
 	public boolean isUnvisited(Point node) {
