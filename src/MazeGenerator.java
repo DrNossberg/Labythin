@@ -10,6 +10,8 @@
 **    size and the desired algorithme/output
 */
 
+import java.time.Instant;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Random;
 import java.awt.Point;
@@ -55,7 +57,9 @@ class MazeGenerator {
 		 * Run the maze generation
 		 */
 
-	public void generate(Maze maze, Mode mode) {
+	public double generate(Maze maze, Mode mode) {
+		Instant start = Instant.now();
+
 		this.printer.print(MessageLevel.INFO, "Generating the maze...");
 		if (mode == Mode.NONE)
 			this.do_recursive(maze, this.activeNode);
@@ -65,6 +69,7 @@ class MazeGenerator {
 		this.completeBorder(maze, maze.getWidth(),  maze.getHeight(), 1);
 		this.polish(maze);
 		this.controlExit(maze);
+		return (Duration.between(start, Instant.now()).toMillis());
 	}
 
 

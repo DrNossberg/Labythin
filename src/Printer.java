@@ -18,6 +18,8 @@ import java.io.OutputStreamWriter;
 
 import picocli.CommandLine.Help.Ansi;
 
+
+
 class Printer implements AutoCloseable {
 	File file;
 	BufferedWriter writer;
@@ -114,7 +116,7 @@ class Printer implements AutoCloseable {
 				print(MessageLevel.DEBUG, "read : " + c);
 			} while (c != '\n'); //turn into reader ?
 		} catch (IOException e) {
-			this.print(MessageLevel.FATAL, "brhu");
+			this.print(MessageLevel.FATAL, "Error when trying to read from standard intput");
 		}
 
 	}

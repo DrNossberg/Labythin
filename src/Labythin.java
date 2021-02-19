@@ -16,6 +16,8 @@ import picocli.CommandLine.Parameters;
 import picocli.CommandLine.Spec;
 import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.*;
+import picocli.CommandLine.Help.Ansi;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +25,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Scanner;
 import java.util.Optional;
+
+
 
 @Command(
 		name = "Labythin",
@@ -65,12 +69,12 @@ class Labythin implements Runnable {
 	boolean verbose;
 	@Option(names = {"-c", "--color"}, description = "color the output, makes it look fabulous")
 	boolean color;
-	@Option(names = {"-f", "--file"}, description = "[NOT tested]file to read the maze from", paramLabel =  "FILE")
+	// @Option(names = {"-f", "--file"}, description = "[NOT tested]file to read the maze from", paramLabel =  "FILE")
 	File f_intput;
-	@Option(names = {"-o", "--output"}, description = "[NOT tested] file to output the maze to", paramLabel = "FILE")
+	@Option(names = {"-o", "--output"}, description = "file to output the maze to", paramLabel = "FILE")
 	File f_output;
-	// @Option(names = {"-t", "--time"}, description = "[NOT IMPLEMENTED] time took to generate the maze", paramLabel = "FILE")
-	// int time;
+	@Option(names = {"-t", "--time"}, description = "time took to generate the maze", paramLabel = "FILE")
+	boolean time;
 
 	public static void main(String[] args) {
 		System.exit(new CommandLine(new Labythin()).execute(args));
@@ -78,7 +82,7 @@ class Labythin implements Runnable {
 
 	@Override
 	public void run() {
-		Instant start = Instant.now();
+		double elapsed_time;
 		Maze maze;
 
 		check_args();
@@ -86,13 +90,13 @@ class Labythin implements Runnable {
 			this.generator = new MazeGenerator(printer, (width), (height));
 			maze = this.generator.createMaze();
 			printer.print(MessageLevel.INFO, toString());
-			this.generator.generate(maze, mode);
+			elapsed_time = this.generator.generate(maze, mode);
 			printer.display(maze);
+			if (time)
+				printer.print(MessageLevel.IMPORTANT, "Took " + Ansi.AUTO.string("@|"+ "green " + String.valueOf(elapsed_time) + "|@") + " ms to create");
 		} catch (IOException e) {
 			System.out.println(e);
 		}
-		// Instant finish = Instant.now();
-		// System.out.println(Duration.between(start, finish).toMillis());
 	}
 
 	private void check_args() {
