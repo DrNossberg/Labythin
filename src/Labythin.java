@@ -41,7 +41,7 @@ import java.util.Optional;
 		header = "%n@|bold,underline Usage:|@",
 		synopsisHeading = "",
 		descriptionHeading = "%n@|bold,underline Description:|@%n",
-		description = "Create mazes using the growing tree algorithme.%n",
+		description = "Create mazes using the growing tree algorithm.%n",
 		parameterListHeading = "@|bold,underline Parameters:|@%n",
 		optionListHeading = "%n@|bold,underline Options:|@%n",
 		footerHeading="%n@|bold,underline Authors:|@%n",
@@ -54,23 +54,23 @@ class Labythin implements Runnable {
 
 	@Spec CommandSpec spec;
 
-	@Parameters(paramLabel = "width",  defaultValue = "5", description = "width  of the maze to create. default : ${DEFAULT-VALUE}")
+	@Parameters(paramLabel = "width",  defaultValue = "30", description = "width  of the maze to create. default : ${DEFAULT-VALUE}")
 	int width;
-	@Parameters(paramLabel = "height", defaultValue = "5", description = "height of the maze to create. default : ${DEFAULT-VALUE}")
+	@Parameters(paramLabel = "height", defaultValue = "30", description = "height of the maze to create. default : ${DEFAULT-VALUE}")
 	int height;
-	@Parameters(paramLabel = "algorithme", defaultValue = "NONE",
-		description = "Mode with which the maze will be generated.\nIf specified, the maze will be generated iteratively, otherwise it will be done recursively\n" +
+	@Option(names = {"-a", "--algorithm"}, arity = "0..1", defaultValue = "NONE", fallbackValue = "NONE",
+		description = "Algorithm to use to generate the maze with.\nIf specified, the maze will be generated iteratively, otherwise it will be done recursively\n" +
 		"values : ${COMPLETION-CANDIDATES}\n" +
 		"default : ${DEFAULT-VALUE} ")
 	Mode mode;
-	@Option(names = {"-s", "--step"},  arity = "0..1", defaultValue = "0", fallbackValue = "1", description = "will display the maze at every step of the maze's creation")
+	@Option(names = {"-s", "--step"}, arity = "0..1", defaultValue = "0", fallbackValue = "1", description = "will display the maze at every step of the maze's creation")
 	int step;
 	@Option(names = {"-v", "--verbose"}, description = "verbose mode of display")
 	boolean verbose;
 	@Option(names = {"-c", "--color"}, description = "color the output, makes it look fabulous")
 	boolean color;
 	// @Option(names = {"-f", "--file"}, description = "[NOT tested]file to read the maze from", paramLabel =  "FILE")
-	File f_intput;
+	// File f_intput;
 	@Option(names = {"-o", "--output"}, description = "file to output the maze to", paramLabel = "FILE")
 	File f_output;
 	@Option(names = {"-t", "--time"}, description = "time took to generate the maze", paramLabel = "FILE")
@@ -103,23 +103,23 @@ class Labythin implements Runnable {
 		if (width <= 0 || height <= 0)
 			throw new ParameterException(spec.commandLine(),
 				"Wrong parameter : Both dimention of the maze should be positiv numbers.");
-		if (f_intput != null && !f_intput.exists())
-			throw new ParameterException(spec.commandLine(),
-				"Wrong parameter : The imput file doesn't existe.");
-		else if (checkFile(f_intput) == FILE_STATE.BAD_FILE)
-			throw new ParameterException(spec.commandLine(),
-				"File issue : file " + f_intput + " isn't well formatted."); //maybe add the display of an example here | ill' depend of the format
+		// if (f_intput != null && !f_intput.exists())
+			// throw new ParameterException(spec.commandLine(),
+				// "Wrong parameter : The imput file doesn't existe.");
+		// else if (checkFile(f_intput) == FILE_STATE.BAD_FILE)
+		// 	throw new ParameterException(spec.commandLine(),
+				// "File issue : file " + f_intput + " isn't well formatted."); //maybe add the display of an example here | ill' depend of the format
 		if (f_output != null && !f_output.canWrite())
 			throw new ParameterException(spec.commandLine(),
 				"File issue : file " + f_output + " already exist and the Labythin can't overwrite it.");
-		if (f_intput != null) {
-			if (!f_intput.exists())
-				throw new ParameterException(spec.commandLine(),
-					"File issue : file " + f_intput + " intput file doesn't exists");
-			if (!f_intput.canRead())
-				throw new ParameterException(spec.commandLine(),
-					"File issue : file " + f_intput + " existe but the Labythin can't read it.");
-		}
+		// if (f_intput != null) {
+		// 	if (!f_intput.exists())
+		// 		throw new ParameterException(spec.commandLine(),
+		// 			"File issue : file " + f_intput + " intput file doesn't exists");
+		// 	if (!f_intput.canRead())
+		// 		throw new ParameterException(spec.commandLine(),
+		// 			"File issue : file " + f_intput + " existe but the Labythin can't read it.");
+		// }
 	}
 
 	private static FILE_STATE checkFile(File file) {
@@ -135,7 +135,7 @@ class Labythin implements Runnable {
 			"height  :\t" + height + "\n" +
 			"verbose :\t" + verbose + "\n" +
 			"color   :\t" + color + "\n" +
-			"f_intput : " + f_intput + "\n" +
+			// "f_intput : " + f_intput + "\n" +
 			"f_output : " + f_output + "\n" +
 			"mode : \t" + mode + "\n" +
 			"step :\t" + step
