@@ -44,10 +44,25 @@ class Printer implements AutoCloseable {
 		// instead of red|green, we can put alot of things here, see 
 		// last comment for more infos -> option...?
 
-		if (file == null)
+		char c = '\0';
+		if (this.file == null) 
 			this.writer = new BufferedWriter(new OutputStreamWriter(System.out));
-		else
-			this.writer = new BufferedWriter(new FileWriter(file)); //needs to check if we can write in the file
+		else {
+			if (this.file != null && this.file.exists()) {
+				this.print(MessageLevel.IMPORTANT, "Warning : File " + this.file + " already exist. Do you wants to override ? y/N:", ' ');
+				do {
+					try {
+						c = (char) System.in.read();
+						print(MessageLevel.DEBUG, "read : " + c);
+					} catch (IOException e) {
+						this.print(MessageLevel.IMPORTANT, "Issue when reading the standard intput.");
+					}
+				} while (c != 'y' && c != 'Y' && c != 'n' && c != 'N');
+				if (c == 'n' || c == 'N')
+					this.print(MessageLevel.FATAL, "Stopped by user : File \"" + this.file + "\" won't be overwrite.");
+			}
+			this.writer = new BufferedWriter(new FileWriter(this.file));
+		}
 	}
 
 	public void print(String message) {
@@ -55,10 +70,14 @@ class Printer implements AutoCloseable {
 	}
 
 	public void print(MessageLevel level, String message) {
+		this.print(level, message, '\n');
+	}
+
+	public void print(MessageLevel level, String message, char end) {
 		if (level != MessageLevel.DEBUG && (verbose ||
 			level == MessageLevel.IMPORTANT ||
 			level == MessageLevel.FATAL))
-			System.out.println(message);
+			System.out.print(message + end);
 		if (level == MessageLevel.FATAL)
 			System.exit(42);
 	}
@@ -146,8 +165,8 @@ class Printer implements AutoCloseable {
 	@Override
 	public void close() {
 		try {
+			this.print(MessageLevel.DEBUG, "Closing filewriter");
 			this.writer.close();
-			System.out.println("ressources fully closed");
 		} catch (Exception e) {
 			this.print(MessageLevel.FATAL, "Printer failed to close writer normally");
 		}

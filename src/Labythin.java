@@ -61,8 +61,8 @@ class Labythin implements Runnable {
 	Mode mode;
 	@Option(names = {"-s", "--step"},  arity = "0..1", defaultValue = "0", fallbackValue = "1", description = "will display the maze at every step of the maze's creation")
 	int step;
-	@Option(names = {"-v", "--verbose"}, description = "[NOT FULLY IMPLEMENTED] verbose mode of display")
-	boolean verbose;	
+	@Option(names = {"-v", "--verbose"}, description = "verbose mode of display")
+	boolean verbose;
 	@Option(names = {"-c", "--color"}, description = "color the output, makes it look fabulous")
 	boolean color;
 	@Option(names = {"-f", "--file"}, description = "[NOT tested]file to read the maze from", paramLabel =  "FILE")
@@ -96,8 +96,6 @@ class Labythin implements Runnable {
 	}
 
 	private void check_args() {
-		char c = '\0';
-
 		if (width <= 0 || height <= 0)
 			throw new ParameterException(spec.commandLine(),
 				"Wrong parameter : Both dimention of the maze should be positiv numbers.");
@@ -107,18 +105,16 @@ class Labythin implements Runnable {
 		else if (checkFile(f_intput) == FILE_STATE.BAD_FILE)
 			throw new ParameterException(spec.commandLine(),
 				"File issue : file " + f_intput + " isn't well formatted."); //maybe add the display of an example here | ill' depend of the format
-		if (f_output != null && ! f_output.exists()) {
-			System.out.println("Warning : File " + f_output + " already exist. Do you wants yo override ? y/N: ");
-			do {
-				try {
-					c = (char) System.in.read();
-				} catch (IOException e) {
-					throw new ParameterException(spec.commandLine(),
-						"Issue when reading the standard intput.");
-				}
-			} while (c != 'y' || c != 'Y' || c != 'n' || c != 'N');
-			if (c == 'n' || c == 'N')
-				throw new ParameterException(spec.commandLine(), "Stopped by user : File " + f_output + " won't be overwrite." );
+		if (f_output != null && !f_output.canWrite())
+			throw new ParameterException(spec.commandLine(),
+				"File issue : file " + f_output + " already exist and the Labythin can't overwrite it.");
+		if (f_intput != null) {
+			if (!f_intput.exists())
+				throw new ParameterException(spec.commandLine(),
+					"File issue : file " + f_intput + " intput file doesn't exists");
+			if (!f_intput.canRead())
+				throw new ParameterException(spec.commandLine(),
+					"File issue : file " + f_intput + " existe but the Labythin can't read it.");
 		}
 	}
 
