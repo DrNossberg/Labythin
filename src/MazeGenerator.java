@@ -55,14 +55,15 @@ class MazeGenerator {
 		 * Run the maze generation
 		 */
 
-	public void generate(Maze maze, boolean iterative, Mode mode) {
+	public void generate(Maze maze, Mode mode) {
 		this.printer.print(MessageLevel.INFO, "Generating the maze...");
-		if (iterative)
-			this.do_iterative(maze, mode);
-		else
+		if (mode == Mode.NONE)
 			this.do_recursive(maze, this.activeNode);
+		else
+			this.do_iterative(maze, mode);
 		this.completeBorder(maze, maze.getHeight(), maze.getWidth(), 0);
 		this.completeBorder(maze, maze.getWidth(),  maze.getHeight(), 1);
+		this.polish(maze);
 		this.controlExit(maze);
 	}
 
@@ -148,17 +149,17 @@ class MazeGenerator {
 	 */
 	public void completeBorder(Maze maze, int currentBorder, int borderLength, int vertical) {
 		for (int i = 1; i < borderLength - 1 && currentBorder % 2 == 0; i++)
-			if (Math.random() > .5)
-				if (vertical == 1 && !maze.isPath(currentBorder - 2, i)) // working on right side
-				{
+			if (Math.random() > .5) {
+				if (vertical == 1)
 					maze.change(currentBorder - 1, i);
-					maze.change(currentBorder - 2, i);
-				}	
-				else if (!maze.isPath(i, currentBorder - 2)) // working on bottom side
-				{
+				else
 					maze.change(i, currentBorder - 1);
-					maze.change(i, currentBorder - 2);
-				}	
+				// if (vertical == 1 && !maze.isPath(currentBorder - 2, i)) { // working on right side
+					// maze.change(currentBorder - 2, i);
+				// } else
+				 // if (!maze.isPath(i, currentBorder - 2)) { // working on bottom side
+					// maze.change(i, currentBorder - 2);
+			}	
 	}
 
 	/**
@@ -204,5 +205,33 @@ class MazeGenerator {
 		if (unvisitedNeighbors.size() > 0)
 			return (unvisitedNeighbors.get(this.rand.nextInt(unvisitedNeighbors.size())));
 		return (new Point(-1, -1));
+	}
+
+	private void polish(Maze maze) {
+		int wallCount;
+
+		this.printer.print(MessageLevel.DEBUG, "polish : \n");
+		for (int y = 0; y < this.height ; y++) {
+			wallCount = 0;
+			for (int x = 0; x < this.width ; x++)
+				if (maze.isWall(x, y))
+					wallCount++;
+			this.printer.print(MessageLevel.DEBUG, " line nbr :" + y +" prcentOfWall : " + ((double)  ((double) wallCount / (double) this.width)));
+			addPath(maze, y, (double) ((double) wallCount / (double) this.width));
+		}
+	}
+
+	/**
+	 * The value of the node to be chaned isn't check, witch mean that we don't know
+	 * if the changed node was a wall or not. This is inteded as a try to not interfere with the
+	 * random of the function.
+	 */
+	private void addPath(Maze maze, int y, double prcentOfWall) {
+		if (prcentOfWall < 0.5)
+			return;
+		for (; prcentOfWall >= .5; prcentOfWall -= (double) 1 / (double) this.width) {
+			this.printer.print(MessageLevel.DEBUG, "On node changed (or not)");
+			maze.change(this.rand.nextInt(width), y, MazeElement.PATH); 
+		}
 	}
 }

@@ -50,20 +50,27 @@ class Printer implements AutoCloseable {
 			this.writer = new BufferedWriter(new FileWriter(file)); //needs to check if we can write in the file
 	}
 
-	public void print(MessageLevel level, String message) {
-		if (verbose || level == MessageLevel.IMPORTANT || level == MessageLevel.FATAL)
-			System.out.println(message);
+	public void print(String message) {
+		this.print(MessageLevel.INFO, message);
 	}
 
-	// public void print(Maze maze) {
+	public void print(MessageLevel level, String message) {
+		if (level != MessageLevel.DEBUG && (verbose ||
+			level == MessageLevel.IMPORTANT ||
+			level == MessageLevel.FATAL))
+			System.out.println(message);
+		if (level == MessageLevel.FATAL)
+			System.exit(42);
+	}
+
 	public void display(Maze maze) {
 		try {
 			if (color) {
 				displayColor(maze, stepping > 0);
-				// displayColorCode();
-			} else {
+				if (verbose)
+					displayColorCode();
+			} else
 				displayBlakAndWhite(maze, stepping > 0);
-			}
 		} catch (IOException e) {
 			print(MessageLevel.FATAL, e.getMessage());
 		}
@@ -76,14 +83,13 @@ class Printer implements AutoCloseable {
 		if (this.stepping <= 0 || step_bro < this.stepping) {
 			this.step_bro += 1;
 			return;
-		}
+		}	
 		this.print(MessageLevel.INFO, "displayed every " + this.stepping + " loop.");
-		// this.print(MessageLevel.IMPORTANT, "------------------\n");
 		this.step_bro = 0;
 		this.display(maze);
 		try {
-			// this.print(MessageLevel.IMPORTANT, "------------------\n");
-			// this.print(MessageLevel.IMPORTANT, "Presse [Enter] to continue or insert a new step number : ");
+			this.print(MessageLevel.IMPORTANT, "------------------\n");
+			this.print(MessageLevel.IMPORTANT, "Presse [Enter] to continue or insert a new step number : ");
 			do {
 				c = (char) System.in.read();
 				print(MessageLevel.DEBUG, "read : " + c);
@@ -94,12 +100,24 @@ class Printer implements AutoCloseable {
 
 	}
 
+	private void displayColorCode() throws IOException {
+		char c;
+
+		this.writer.write("Color codes :\n");
+		for (MazeElement value : MazeElement.values()) {
+			if (value == MazeElement.UNDEFINED)
+				continue;
+			c = value.getChar();
+    		this.writer.write('\t' + Ansi.AUTO.string("@|" + this.colors_dic.get(c) + ' ' + c + "|@") +  " : " + value.name() + '\n');
+    	}
+	}
+
 	private void displayColor(Maze maze, boolean verbose) throws IOException {
 		StringBuffer strbuf = new StringBuffer();
 		char onHold = maze.getElement(0, 0).getChar();
 		char node = onHold;
 
-		for (int y = 0; y < maze.getHeight(); y++) {
+		for (int y = 0; y < maze.getHeight(); y++, strbuf.append('\n')) {
 			for (int x = 0; x < maze.getWidth(); x++, strbuf.append(node)) {
 				node = verbose ? maze.getValue(x, y) : maze.getElement(x, y).getChar();
 				if (node != onHold) {
@@ -108,22 +126,19 @@ class Printer implements AutoCloseable {
 					onHold = node;
 				}
 			}
-			strbuf.append('\n');
 		}
 		this.writer.write(Ansi.AUTO.string("@|" + this.colors_dic.get(onHold) + ' ' + strbuf + "|@"));
 		this.writer.flush();
 	}
 
 	private void displayBlakAndWhite(Maze maze, boolean verbose) throws IOException {
-		for (int y = 0; y < maze.getHeight(); y++) {
+		for (int y = 0; y < maze.getHeight(); y++, this.writer.write('\n')) {
 			for (int x = 0; x < maze.getWidth(); x++) {
 				if (verbose)
 					this.writer.write(maze.getValue(x, y));
-				else {
+				else
 					this.writer.write(maze.getElement(x, y).getChar());
-				}
 			}
-			this.writer.write('\n');
 		}
 		this.writer.flush();
 	}

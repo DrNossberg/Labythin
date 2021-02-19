@@ -17,7 +17,6 @@
 **                  mode reserved to dev to help debug the programm
 */
 
-
 enum MessageLevel {
     FATAL,
     IMPORTANT,
