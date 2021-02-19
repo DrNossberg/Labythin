@@ -27,7 +27,6 @@ import java.util.Scanner;
 import java.util.Optional;
 
 
-
 @Command(
 		name = "Labythin",
 		version = 	{"Labythin 2021 2.0",
@@ -69,8 +68,6 @@ class Labythin implements Runnable {
 	boolean verbose;
 	@Option(names = {"-c", "--color"}, description = "color the output, makes it look fabulous")
 	boolean color;
-	// @Option(names = {"-f", "--file"}, description = "[NOT tested]file to read the maze from", paramLabel =  "FILE")
-	// File f_intput;
 	@Option(names = {"-o", "--output"}, description = "file to output the maze to", paramLabel = "FILE")
 	File f_output;
 	@Option(names = {"-t", "--time"}, description = "time took to generate the maze", paramLabel = "FILE")
@@ -103,29 +100,9 @@ class Labythin implements Runnable {
 		if (width <= 0 || height <= 0)
 			throw new ParameterException(spec.commandLine(),
 				"Wrong parameter : Both dimention of the maze should be positiv numbers.");
-		// if (f_intput != null && !f_intput.exists())
-			// throw new ParameterException(spec.commandLine(),
-				// "Wrong parameter : The imput file doesn't existe.");
-		// else if (checkFile(f_intput) == FILE_STATE.BAD_FILE)
-		// 	throw new ParameterException(spec.commandLine(),
-				// "File issue : file " + f_intput + " isn't well formatted."); //maybe add the display of an example here | ill' depend of the format
 		if (f_output != null && !f_output.canWrite())
 			throw new ParameterException(spec.commandLine(),
 				"File issue : file " + f_output + " already exist and the Labythin can't overwrite it.");
-		// if (f_intput != null) {
-		// 	if (!f_intput.exists())
-		// 		throw new ParameterException(spec.commandLine(),
-		// 			"File issue : file " + f_intput + " intput file doesn't exists");
-		// 	if (!f_intput.canRead())
-		// 		throw new ParameterException(spec.commandLine(),
-		// 			"File issue : file " + f_intput + " existe but the Labythin can't read it.");
-		// }
-	}
-
-	private static FILE_STATE checkFile(File file) {
-		//hashmap ? 
-		//formatage
-		return (FILE_STATE.GOOD_FILE);
 	}
 
 	@Override
@@ -135,7 +112,6 @@ class Labythin implements Runnable {
 			"height  :\t" + height + "\n" +
 			"verbose :\t" + verbose + "\n" +
 			"color   :\t" + color + "\n" +
-			// "f_intput : " + f_intput + "\n" +
 			"f_output : " + f_output + "\n" +
 			"mode : \t" + mode + "\n" +
 			"step :\t" + step
