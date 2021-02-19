@@ -17,6 +17,7 @@
 */
 
 public enum Mode {
+    NONE,
     RECURSIVE_BACKTRACKER,
     PRISM,
     OLDEST,

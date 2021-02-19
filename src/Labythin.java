@@ -54,13 +54,11 @@ class Labythin implements Runnable {
 	int width;
 	@Parameters(paramLabel = "height", defaultValue = "5", description = "height of the maze to create. default : ${DEFAULT-VALUE}")
 	int height;
-	@Option(names = {"-i", "--iterativ"}, description = "Use the iterative version of the algorithme instead of the recusive one")
-	boolean iterativ;
-	@Option(names = {"-a", "--algorithme"}, defaultValue = "RECURSIVE_BACKTRACKER",
-		description = "Mode with which the maze will be generated\n" +
+	@Parameters(paramLabel = "algorithme", defaultValue = "NONE",
+		description = "Mode with which the maze will be generated.\nIf specified, the maze will be generated iteratively, otherwise it will be done recursively\n" +
 		"values : ${COMPLETION-CANDIDATES}\n" +
 		"default : ${DEFAULT-VALUE} ")
-	Mode mode; //here, diff between iteratif/recursif, check for both -> if iteratif, option on with algorithme to use ? 
+	Mode mode;
 	@Option(names = {"-s", "--step"},  arity = "0..1", defaultValue = "0", fallbackValue = "1", description = "will display the maze at every step of the maze's creation")
 	int step;
 	@Option(names = {"-v", "--verbose"}, description = "[NOT FULLY IMPLEMENTED] verbose mode of display")
@@ -88,15 +86,11 @@ class Labythin implements Runnable {
 			this.generator = new MazeGenerator(printer, (width), (height));
 			maze = this.generator.createMaze();
 			printer.print(MessageLevel.INFO, toString());
-			this.generator.generate(maze, iterativ, mode);
-
+			this.generator.generate(maze, mode);
 			printer.display(maze);
-
-
 		} catch (IOException e) {
 			System.out.println(e);
 		}
-
 		// Instant finish = Instant.now();
 		// System.out.println(Duration.between(start, finish).toMillis());
 	}
