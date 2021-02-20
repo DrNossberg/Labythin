@@ -90,7 +90,7 @@ class Labythin implements Runnable {
 			elapsed_time = this.generator.generate(maze, mode);
 			printer.display(maze);
 			if (time)
-				printer.print(MessageLevel.IMPORTANT, "Took " + Ansi.AUTO.string("@|"+ "green " + String.valueOf(elapsed_time) + "|@") + " ms to create");
+				printer.displayElsapsedTime(elapsed_time);
 		} catch (IOException e) {
 			System.out.println(e);
 		}
@@ -100,6 +100,9 @@ class Labythin implements Runnable {
 		if (width <= 0 || height <= 0)
 			throw new ParameterException(spec.commandLine(),
 				"Wrong parameter : Both dimention of the maze should be positiv numbers.");
+		if (step < 0)
+			throw new ParameterException(spec.commandLine(),
+				"Wrong parameter : Step indent must be a positiv number.");
 		if (f_output != null && !f_output.canWrite())
 			throw new ParameterException(spec.commandLine(),
 				"File issue : file " + f_output + " already exist and the Labythin can't overwrite it.");
@@ -114,7 +117,8 @@ class Labythin implements Runnable {
 			"color   :\t" + color + "\n" +
 			"f_output : " + f_output + "\n" +
 			"mode : \t" + mode + "\n" +
-			"step :\t" + step
+			"step :\t" + step + 
+			"time :\t" + time
 			);
 	}
 }
