@@ -65,9 +65,10 @@ class MazeGenerator {
 			this.do_recursive(maze, this.activeNode);
 		else
 			this.do_iterative(maze, mode);
+		
+		this.polish(maze);
 		this.completeBorder(maze, maze.getHeight(), maze.getWidth(), 0);
 		this.completeBorder(maze, maze.getWidth(),  maze.getHeight(), 1);
-		this.polish(maze);
 		this.controlExit(maze);
 		return (Duration.between(start, Instant.now()).toMillis());
 	}
@@ -133,16 +134,16 @@ class MazeGenerator {
 	 * If none exists, create one
 	 */
 	public void controlExit(Maze maze) {
-		int w = maze.getWidth() - 1;
-		int h = maze.getHeight() - 1;
+		int x = maze.getWidth() - 1;
+		int y = maze.getHeight() - 1;
 
-		maze.change(w, h, MazeElement.PATH);
+		maze.change(x, y, MazeElement.PATH);
 		// Make path to one of node at the right bottom's direct neighbors
-		if (maze.isWall(w, h - 1) && maze.isWall(w - 1, h))
+		if (maze.isWall(x, y - 1) && maze.isWall(x - 1, y))
 			if (Math.random() > .5)
-				maze.change(w, h - 1, MazeElement.PATH);
+				maze.change(x, y - 1, MazeElement.PATH);
 			else
-				maze.change(w - 1, h, MazeElement.PATH);
+				maze.change(x - 1, y, MazeElement.PATH);
 	}
 
 	/**
@@ -155,15 +156,15 @@ class MazeGenerator {
 	public void completeBorder(Maze maze, int currentBorder, int borderLength, int vertical) {
 		for (int i = 1; i < borderLength - 1 && currentBorder % 2 == 0; i++)
 			if (Math.random() > .5) {
-				if (vertical == 1)
+				if (vertical == 1 && !maze.isPath(currentBorder - 2, i)) { // working on right side
 					maze.change(currentBorder - 1, i);
-				else
-					maze.change(i, currentBorder - 1);
-				// if (vertical == 1 && !maze.isPath(currentBorder - 2, i)) { // working on right side
-					// maze.change(currentBorder - 2, i);
-				// } else
-				 // if (!maze.isPath(i, currentBorder - 2)) { // working on bottom side
-					// maze.change(i, currentBorder - 2);
+					maze.change(currentBorder - 2, i);
+				} 
+				else 
+					if (!maze.isPath(i, currentBorder - 2)) { // working on bottom side
+						maze.change(i, currentBorder - 1);
+						maze.change(i, currentBorder - 2);
+					} 
 			}	
 	}
 

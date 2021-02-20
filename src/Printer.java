@@ -164,7 +164,7 @@ class Printer implements AutoCloseable {
 				if (verbose)
 					this.writer.write(maze.getValue(x, y));
 				else
-					this.writer.write(maze.getElement(x, y).getChar());
+					this.writer.write(this.chooseDisplayChar(maze, x, y));
 			}
 		}
 		this.writer.flush();
@@ -178,6 +178,31 @@ class Printer implements AutoCloseable {
 		} catch (Exception e) {
 			this.print(MessageLevel.FATAL, "Printer failed to close writer normally");
 		}
+	}
+
+	public char chooseDisplayChar(Maze maze, int x, int  y) {
+		// │ ─ +
+		// Case node is a path
+		if (maze.getElement(x, y) == MazeElement.PATH)
+			return ' ';
+
+		// Cases at border
+		if ((x == 0 && maze.getElement(x+1, y) == MazeElement.PATH) || 
+			(x == maze.getWidth()-1 && maze.getElement(x-1, y) == MazeElement.PATH))
+			return '│';
+		else if ((y == 0 && maze.getElement(x, y+1) == MazeElement.PATH) ||
+				(y == maze.getHeight()-1 && maze.getElement(x, y-1) == MazeElement.PATH))
+			return '─';
+		
+		// Cases in middle
+		if (maze.getElement(x-1, y) == MazeElement.PATH && maze.getElement(x+1, y) == MazeElement.PATH)
+			return '│';
+		else if (maze.getElement(x, y-1) == MazeElement.PATH && maze.getElement(x, y+1) == MazeElement.PATH)
+			return '─';
+
+		// Default case
+		return '+';
+
 	}
 }
 
