@@ -35,3 +35,5 @@ header_format\.py
 
 #Temps files
 colored_header\.txt
+
+lib/picocli-4\.6\.1\.jar
