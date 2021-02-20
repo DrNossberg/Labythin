@@ -37,7 +37,7 @@ $(OBJ_DIR)/%.$(OBJ_TYPE) : $(SRC_DIR)/%.$(FILE_TYPE)
 	$(JC) $(CFLAGS):$(LFLAGS) -d $(OUTPUT_DIR)/$(shell dirname $@) $^
 
 clean	:
-	rm -f $(wildcard $(OBJ_DIR)/*.$(OBJ_TYPE))
+	rm -f $(OBJ_DIR)/*.$(OBJ_TYPE)
 
 fclean	: clean
 	rmdir $(OBJ_DIR)

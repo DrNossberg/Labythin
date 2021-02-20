@@ -25,11 +25,11 @@ LIBS		:= $(LIB_DIR)/
 all		: $(NAME)
 
 $(NAME)	: $(OBJ)
-	$(EXEC) -cvf $(NAME) *.$(OBJ_TYPE)
+	$(EXEC) -cvf $(NAME) ./picocli/*.$(OBJ_TYPE)
 
 
 %.$(OBJ_TYPE) : $(SRC_DIR)/%.$(FILE_TYPE)
-	$(JC)  $^
+	$(JC) -d $(OBJ_DIR)  $^
 
 clean	:
 	rm -rf *.$(OBJ_TYPE)
