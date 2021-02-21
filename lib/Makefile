@@ -32,7 +32,10 @@ $(NAME)	: $(OBJ)
 	$(JC) -d $(OBJ_DIR)  $^
 
 clean	:
-	rm -rf *.$(OBJ_TYPE)
+	rm -rf ./picocli/*.$(OBJ_TYPE)
+ifneq (, $(wildcard ./picocli/))
+	rmdir ./picocli/ 
+endif
 
 fclean	: clean
 	rm	$(NAME)
