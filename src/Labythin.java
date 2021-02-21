@@ -74,10 +74,12 @@ class Labythin implements Runnable {
 	boolean color;
 	@Option(names = {"-o", "--output"}, description = "file to output the maze to", paramLabel = "FILE")
 	File fOutput;
-	@Option(names = {"-p", "--pretty-print"}, description = "display wall as pip and underscore", paramLabel = "FILE")
+	@Option(names = {"-p", "--pretty-print"}, description = "display wall as wall with special characters")
 	boolean prettyPrint;
-	@Option(names = {"-t", "--time"}, description = "time took to generate the maze", paramLabel = "FILE")
+	@Option(names = {"-t", "--time"}, description = "time took to generate the maze")
 	boolean time;
+	@Option(names = {"-m", "--memory"}, description = "display the allocated memory/memory used by the program")
+	boolean memory;
 
 	public static void main(String[] args) {
 		System.exit(new CommandLine(new Labythin()).execute(args));

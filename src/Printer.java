@@ -39,7 +39,7 @@ class Printer implements AutoCloseable {
 		this.prettyPrint = pr.commandSpec().findOption("pretty-print").getValue();
 
 		this.colors_dic.put(MazeElement.WALL.getChar(),				"white");
-	    this.colors_dic.put(MazeElement.WALL_UNVISITED.getChar(),	"white");
+	    this.colors_dic.put(MazeElement.WALL_UNVISITED.getChar(),	"white"); //bg(5;5;5)
 	    this.colors_dic.put(MazeElement.WALL_VISITED.getChar(),		"white");
 	    this.colors_dic.put(MazeElement.PATH.getChar(),				"yellow");
 	    this.colors_dic.put(MazeElement.PATH_UNVISITED.getChar(),	"red");
@@ -145,7 +145,7 @@ class Printer implements AutoCloseable {
 		char onHold = maze.getElement(0, 0).getChar();
 		char node = onHold;
 
-		for (int y = 0; y < maze.getHeight(); y++, strbuf.append('\n')) {
+		for (int y = 0; y < maze.getHeight(); y++, this.writer.write('\n')) {
 			for (int x = 0; x < maze.getWidth(); x++, strbuf.append(node)) {
 				node = stepping ? maze.getValue(x, y) : maze.getElement(x, y).getChar();
 				if (node != onHold) {
@@ -154,6 +154,8 @@ class Printer implements AutoCloseable {
 					onHold = node;
 				}
 			}
+			this.writer.write(Ansi.AUTO.string("@|" + this.colors_dic.get(onHold) + ' ' + strbuf + "|@"));
+			strbuf.setLength(0);
 		}
 		this.writer.write(Ansi.AUTO.string("@|" + this.colors_dic.get(onHold) + ' ' + strbuf + "|@"));
 		this.writer.flush();
@@ -186,39 +188,39 @@ class Printer implements AutoCloseable {
 	public char chooseDisplayChar(Maze maze, int x, int  y) {
 		// │ ─ +
 		if (x == 0 && y == 0 && maze.getElement(x+1, y) == MazeElement.PATH)
-			return '→';
+			return ('→');
 		else if (x == 0 && y == 0)
-			return '↓';
+			return ('↓');
 
 		if (x == maze.getWidth()-1 && y == maze.getHeight()-1 && maze.getElement(x-1, y) == MazeElement.PATH)
-			return '→';
+			return ('→');
 		else if (x == maze.getWidth()-1 && y == maze.getHeight()-1)
-			return '↓';
+			return ('↓');
 
-		if (x == 0 && y == maze.getHeight()-1)
-			return '└';
-		if (x == maze.getWidth()-1 && y == 0)
-			return '┐';
+		if (x == 0 && y == maze.getHeight() - 1)
+			return ('└');
+		if (x == maze.getWidth() - 1 && y == 0)
+			return ('┐');
 
 		if (maze.getElement(x, y) == MazeElement.PATH)
-			return ' ';
+			return (' ');
 
 		// Cases at border
 		if ((x == 0 /*&& maze.getElement(x+1, y) == MazeElement.PATH*/) || 
 			(x == maze.getWidth()-1 /*&& maze.getElement(x-1, y) == MazeElement.PATH*/))
-			return '│';
+			return ('│');
 		else if ((y == 0 /*&& maze.getElement(x, y+1) == MazeElement.PATH*/) ||
 				(y == maze.getHeight()-1 /*&& maze.getElement(x, y-1) == MazeElement.PATH*/))
-			return '─';
+			return ('─');
 		
 		// Cases in middle
 		if (maze.getElement(x-1, y) == MazeElement.PATH && maze.getElement(x+1, y) == MazeElement.PATH)
-			return '│';
+			return ('│');
 		else if (maze.getElement(x, y-1) == MazeElement.PATH && maze.getElement(x, y+1) == MazeElement.PATH)
-			return '─';
+			return ('─');
 
 		// Default case
-		return '┼';
+		return ('┼');
 
 	}
 }
