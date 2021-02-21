@@ -185,16 +185,30 @@ class Printer implements AutoCloseable {
 
 	public char chooseDisplayChar(Maze maze, int x, int  y) {
 		// │ ─ +
-		// Case node is a path
+		if (x == 0 && y == 0 && maze.getElement(x+1, y) == MazeElement.PATH)
+			return '→';
+		else if (x == 0 && y == 0)
+			return '↓';
+
+		if (x == maze.getWidth()-1 && y == maze.getHeight()-1 && maze.getElement(x-1, y) == MazeElement.PATH)
+			return '→';
+		else if (x == maze.getWidth()-1 && y == maze.getHeight()-1)
+			return '↓';
+
+		if (x == 0 && y == maze.getHeight()-1)
+			return '└';
+		if (x == maze.getWidth()-1 && y == 0)
+			return '┐';
+
 		if (maze.getElement(x, y) == MazeElement.PATH)
 			return ' ';
 
 		// Cases at border
-		if ((x == 0 && maze.getElement(x+1, y) == MazeElement.PATH) || 
-			(x == maze.getWidth()-1 && maze.getElement(x-1, y) == MazeElement.PATH))
+		if ((x == 0 /*&& maze.getElement(x+1, y) == MazeElement.PATH*/) || 
+			(x == maze.getWidth()-1 /*&& maze.getElement(x-1, y) == MazeElement.PATH*/))
 			return '│';
-		else if ((y == 0 && maze.getElement(x, y+1) == MazeElement.PATH) ||
-				(y == maze.getHeight()-1 && maze.getElement(x, y-1) == MazeElement.PATH))
+		else if ((y == 0 /*&& maze.getElement(x, y+1) == MazeElement.PATH*/) ||
+				(y == maze.getHeight()-1 /*&& maze.getElement(x, y-1) == MazeElement.PATH*/))
 			return '─';
 		
 		// Cases in middle
@@ -204,7 +218,7 @@ class Printer implements AutoCloseable {
 			return '─';
 
 		// Default case
-		return '+';
+		return '┼';
 
 	}
 }
