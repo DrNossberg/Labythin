@@ -39,7 +39,7 @@ class Printer implements AutoCloseable {
 		this.prettyPrint = pr.commandSpec().findOption("pretty-print").getValue();
 
 		this.colors_dic.put(MazeElement.WALL.getChar(),				"white");
-	    this.colors_dic.put(MazeElement.WALL_UNVISITED.getChar(),	"white"); //bg(5;5;5)
+	    this.colors_dic.put(MazeElement.WALL_UNVISITED.getChar(),	"bg(5;5;5)"); //
 	    this.colors_dic.put(MazeElement.WALL_VISITED.getChar(),		"white");
 	    this.colors_dic.put(MazeElement.PATH.getChar(),				"yellow");
 	    this.colors_dic.put(MazeElement.PATH_UNVISITED.getChar(),	"red");

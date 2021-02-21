@@ -13,20 +13,19 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
-import picocli.CommandLine.Spec;
-import picocli.CommandLine.Model.CommandSpec;
-
 import picocli.CommandLine.ParameterException;
+import picocli.CommandLine.Spec;
 import picocli.CommandLine.ParseResult;
 import picocli.CommandLine.Help.Ansi;
-
+import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Model.OptionSpec;
 
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Optional;
 
@@ -36,7 +35,6 @@ import java.lang.management.MemoryPoolMXBean;
 import java.lang.management.MemoryUsage;
 import java.lang.management.RuntimeMXBean;
 import com.sun.management.OperatingSystemMXBean;
-
 
 @Command(
         name = "Labythin",
@@ -124,8 +122,7 @@ class Labythin implements Runnable {
     }
 
     private double cpuUsage() {
-     operatingSystemMXBean   = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
-     long processCpuTime     = operatingSystemMXBean.getProcessCpuTime();
+     long processCpuTime     = this.operatingSystemMXBean.getProcessCpuTime();
      long elapsedCpu         = processCpuTime - this.prevProcessCpuTime;
      long elapsedTime        = runtimeMXBean.getUptime() - this.prevUpTime;
 
@@ -134,6 +131,7 @@ class Labythin implements Runnable {
 
     private double memoryUsage() {
         long usedHeapMemoryAfterLastGC = 0;
+
         for (MemoryPoolMXBean memoryPool : this.memoryPools) {
             if (memoryPool.getType().equals(MemoryType.HEAP)) {
                 MemoryUsage poolCollectionMemoryUsage = memoryPool.getCollectionUsage();
