@@ -80,7 +80,6 @@ class Labythin implements Runnable {
 	boolean time;
 
 	public static void main(String[] args) {
-		// ParseResult parseResult = new CommandLine(new Labythin()).getParseResult();
 		System.exit(new CommandLine(new Labythin()).execute(args));
 	}
 
@@ -118,16 +117,13 @@ class Labythin implements Runnable {
 
 	@Override
 	public String toString() {
-		return (
-			"width   :\t" + width + "\n" +
-			"height  :\t" + height + "\n" +
-			"verbose :\t" + verbose + "\n" +
-			"color   :\t" + color + "\n" +
-			"fOutput : " + fOutput + "\n" +
-			"mode : \t" + mode + "\n" +
-			"step :\t" + step + 
-			"time :\t" + time
-			);
+		ParseResult pr = spec.commandLine().getParseResult();
+		String res = "";
+
+        for (OptionSpec option : spec.options())
+            res += String.format("%s, %s was specified: %s\n\t value : %s\n", option.shortestName(),
+            	option.longestName(), pr.hasMatchedOption(option), option.getValue());
+		return (res);
 	}
 }
 
