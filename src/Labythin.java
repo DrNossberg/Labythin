@@ -113,7 +113,7 @@ class Labythin implements Runnable {
             if (time)
                 printer.displayValue("Took %s ms to finish.",  String.format("%.2f", this.runtimeMXBean.getUptime() - this.prevUpTime));
             if (memory) {
-                printer.displayValue("Average %s%% of CPU usage.", String.format("%.2f", this.cpuUsage()), "red");
+                printer.displayValue("Average %s%% of available CPU usage.", String.format("%.2f", this.cpuUsage()), "red");
                 printer.displayValue("Used roughtly %s mo of memory.",  String.format("%.0f", this.memoryUsage() / 1024), "blue");
             }
         } catch (IOException e) {
