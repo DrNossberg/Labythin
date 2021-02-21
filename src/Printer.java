@@ -85,11 +85,15 @@ class Printer implements AutoCloseable {
 			System.exit(42);
 	}
 
-	public void displayElsapsedTime(double elapsedTime) {
+	public void displayValue(String str, String value) { // value : double -> T ? 
+		this.displayValue(str, value, "green");
+	}
+
+	public void displayValue(String str, String value, String color) {
 		if (this.color)
-			this.print(MessageLevel.IMPORTANT, "Took " + Ansi.AUTO.string("@|"+ "green " + String.valueOf(elapsedTime) + "|@") + " ms to create");
+			this.print(MessageLevel.IMPORTANT, String.format(str, Ansi.AUTO.string("@|"+ color + ' ' + value + "|@")));
 		else
-			this.print(MessageLevel.IMPORTANT, "Took " +  String.valueOf(elapsedTime) +  " ms to create");
+			this.print(MessageLevel.IMPORTANT, String.format(str, value));
 	}
 
 	public void display(Maze maze) {

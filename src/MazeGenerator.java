@@ -57,9 +57,7 @@ class MazeGenerator {
 		 * Run the maze generation
 		 */
 
-	public double generate(Maze maze, Mode mode) {
-		Instant start = Instant.now();
-
+	public void generate(Maze maze, Mode mode) {
 		this.printer.print(MessageLevel.INFO, "Generating the maze...");
 		if (mode == Mode.NONE)
 			this.do_recursive(maze, this.activeNode);
@@ -70,7 +68,6 @@ class MazeGenerator {
 		this.completeBorder(maze, maze.getHeight(), maze.getWidth(), 0);
 		this.completeBorder(maze, maze.getWidth(),  maze.getHeight(), 1);
 		this.controlExit(maze);
-		return (Duration.between(start, Instant.now()).toMillis());
 	}
 
 
