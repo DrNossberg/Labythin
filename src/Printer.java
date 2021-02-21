@@ -16,9 +16,8 @@ import java.io.IOException;
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 
+import picocli.CommandLine.ParseResult;
 import picocli.CommandLine.Help.Ansi;
-
-
 
 class Printer implements AutoCloseable {
 	File file;
@@ -28,14 +27,16 @@ class Printer implements AutoCloseable {
 	Map<Character, String> colors_dic;
 	int stepping;
 	static int step_bro = 0;
+	boolean prettyPrint;
 
-	public Printer(File file, boolean color, boolean verbose, int step) throws IOException {
-		this.file = file;
-		this.verbose = verbose;
-		this.color = color;
+	public Printer(ParseResult pr) throws IOException {
+		this.file 		= pr.commandSpec().findOption("output").getValue();
+		this.verbose 	= pr.commandSpec().findOption("verbose").getValue();
+		this.color 		= pr.commandSpec().findOption("color").getValue();
 		this.colors_dic = new Hashtable<Character, String>();
-		this.stepping = step;
+		this.stepping 	= pr.commandSpec().findOption("step").getValue();
 		this.step_bro = 0;
+		this.prettyPrint = pr.commandSpec().findOption("pretty-print").getValue();
 
 		this.colors_dic.put(MazeElement.WALL.getChar(),				"white");
 	    this.colors_dic.put(MazeElement.WALL_UNVISITED.getChar(),	"white");
@@ -76,7 +77,7 @@ class Printer implements AutoCloseable {
 	}
 
 	public void print(MessageLevel level, String message, char end) {
-		if (level != MessageLevel.DEBUG && (verbose ||
+		if (level != MessageLevel.DEBUG && (this.verbose ||
 			level == MessageLevel.IMPORTANT ||
 			level == MessageLevel.FATAL))
 			System.out.print(message + end);
@@ -93,9 +94,9 @@ class Printer implements AutoCloseable {
 
 	public void display(Maze maze) {
 		try {
-			if (color) {
+			if (this.color) {
 				displayColor(maze, stepping > 0);
-				if (verbose)
+				if (this.verbose)
 					displayColorCode();
 			} else
 				displayBlakAndWhite(maze, stepping > 0);
@@ -139,14 +140,14 @@ class Printer implements AutoCloseable {
     	}
 	}
 
-	private void displayColor(Maze maze, boolean verbose) throws IOException {
+	private void displayColor(Maze maze, boolean stepping) throws IOException {
 		StringBuffer strbuf = new StringBuffer();
 		char onHold = maze.getElement(0, 0).getChar();
 		char node = onHold;
 
 		for (int y = 0; y < maze.getHeight(); y++, strbuf.append('\n')) {
 			for (int x = 0; x < maze.getWidth(); x++, strbuf.append(node)) {
-				node = verbose ? maze.getValue(x, y) : maze.getElement(x, y).getChar();
+				node = stepping ? maze.getValue(x, y) : maze.getElement(x, y).getChar();
 				if (node != onHold) {
 					this.writer.write(Ansi.AUTO.string("@|" + this.colors_dic.get(onHold) + ' ' + strbuf + "|@"));
 					strbuf.setLength(0);
@@ -158,13 +159,15 @@ class Printer implements AutoCloseable {
 		this.writer.flush();
 	}
 
-	private void displayBlakAndWhite(Maze maze, boolean verbose) throws IOException {
+	private void displayBlakAndWhite(Maze maze, boolean stepping) throws IOException {
 		for (int y = 0; y < maze.getHeight(); y++, this.writer.write('\n')) {
 			for (int x = 0; x < maze.getWidth(); x++) {
-				if (verbose)
+				if (stepping)
 					this.writer.write(maze.getValue(x, y));
-				else
+				else if (this.prettyPrint)
 					this.writer.write(this.chooseDisplayChar(maze, x, y));
+				else
+					this.writer.write(maze.getElement(x, y).getChar());
 			}
 		}
 		this.writer.flush();

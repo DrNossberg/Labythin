@@ -15,14 +15,18 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.Spec;
 import picocli.CommandLine.Model.CommandSpec;
-import picocli.CommandLine.*;
+
+import picocli.CommandLine.ParameterException;
+import picocli.CommandLine.ParseResult;
 import picocli.CommandLine.Help.Ansi;
 
+import picocli.CommandLine.Model.OptionSpec;
 
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.*;
 import java.util.Scanner;
 import java.util.Optional;
 
@@ -69,22 +73,26 @@ class Labythin implements Runnable {
 	@Option(names = {"-c", "--color"}, description = "color the output, makes it look fabulous")
 	boolean color;
 	@Option(names = {"-o", "--output"}, description = "file to output the maze to", paramLabel = "FILE")
-	File f_output;
+	File fOutput;
+	@Option(names = {"-p", "--pretty-print"}, description = "display wall as pip and underscore", paramLabel = "FILE")
+	boolean prettyPrint;
 	@Option(names = {"-t", "--time"}, description = "time took to generate the maze", paramLabel = "FILE")
 	boolean time;
 
 	public static void main(String[] args) {
+		// ParseResult parseResult = new CommandLine(new Labythin()).getParseResult();
 		System.exit(new CommandLine(new Labythin()).execute(args));
 	}
 
 	@Override
 	public void run() {
+		ParseResult parseResult = spec.commandLine().getParseResult();
 		double elapsed_time;
 		Maze maze;
 
 		check_args();
-		try (Printer printer = new Printer(f_output, color, verbose, step)) {
-			this.generator = new MazeGenerator(printer, (width), (height));
+		try (Printer printer = new Printer(parseResult)) {
+			this.generator = new MazeGenerator(printer, width, height);
 			maze = this.generator.createMaze();
 			printer.print(MessageLevel.INFO, toString());
 			elapsed_time = this.generator.generate(maze, mode);
@@ -103,9 +111,9 @@ class Labythin implements Runnable {
 		if (step < 0)
 			throw new ParameterException(spec.commandLine(),
 				"Wrong parameter : Step indent must be a positiv number.");
-		if (f_output != null && !f_output.canWrite())
+		if (fOutput != null && fOutput.exists() && !fOutput.canWrite())
 			throw new ParameterException(spec.commandLine(),
-				"File issue : file " + f_output + " already exist and the Labythin can't overwrite it.");
+				"File issue : file " + fOutput + " already exist and the Labythin can't overwrite it.");
 	}
 
 	@Override
@@ -115,7 +123,7 @@ class Labythin implements Runnable {
 			"height  :\t" + height + "\n" +
 			"verbose :\t" + verbose + "\n" +
 			"color   :\t" + color + "\n" +
-			"f_output : " + f_output + "\n" +
+			"fOutput : " + fOutput + "\n" +
 			"mode : \t" + mode + "\n" +
 			"step :\t" + step + 
 			"time :\t" + time
