@@ -76,11 +76,12 @@ class Printer implements AutoCloseable {
 		this.print(level, message, '\n');
 	}
 
-	public void print(MessageLevel level, String message, char end) {
-		if (level != MessageLevel.DEBUG && (this.verbose ||
-			level == MessageLevel.IMPORTANT ||
-			level == MessageLevel.FATAL))
-			System.out.print(message + end);
+	public void print(MessageLevel level, String msg, char end) {
+		if (level != MessageLevel.DEBUG && (this.verbose || level == MessageLevel.IMPORTANT || level == MessageLevel.FATAL))
+			for (int startbold = 0, endbold = -1; (startbold = msg.substring(startbold).indexOf("**")) != -1 && (endbold = msg.substring(startbold += 2).indexOf("**")) != -1; startbold = endbold + 2) //TODO a function
+				System.out.print(msg.substring(0, startbold - 2) + 
+					Ansi.AUTO.string("@|bold "+ msg.substring(startbold, endbold += startbold ) + "|@")
+					 + msg.substring(endbold + 2) + end);
 		if (level == MessageLevel.FATAL)
 			System.exit(42);
 	}

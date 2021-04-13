@@ -15,7 +15,7 @@ public enum MazeElement {
     WALL('#'),
     WALL_UNVISITED('#'),
     WALL_VISITED('_'),
-    PATH(' '),
+    PATH('.'),
     PATH_UNVISITED('o'),
     PATH_VISITED('+');
 

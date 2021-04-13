@@ -59,5 +59,6 @@ lib_fclean:
 
 .PHONY	: all compile clean fclean re lib
 
-# verbose mode. use as $ make vrb=1 
-# $(vrb).SILENT:
+# verbose mode. use as 
+# 	$ make vrb=1 
+$(vrb).SILENT:

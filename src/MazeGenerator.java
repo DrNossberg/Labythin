@@ -59,14 +59,15 @@ class MazeGenerator {
 
 	public void generate(Maze maze, Mode mode) {
 		this.printer.print(MessageLevel.INFO, "Generating the maze...");
-		if (mode == Mode.NONE)
-			this.do_recursive(maze, this.activeNode);
-		else
-			this.do_iterative(maze, mode);
-		
+		try {
+			if (mode == Mode.NONE)
+				this.do_recursive(maze, this.activeNode);
+			else
+				this.do_iterative(maze, mode);
+		} catch (StackOverflowError e) {
+			this.printer.print(MessageLevel.FATAL, "StackOverflowError ! Structures run by the recursive are too big, try to increase the stack size with **-Xss?m**, with ? being an integer.");
+		}
 		this.polish(maze);
-		this.completeBorder(maze, maze.getHeight(), maze.getWidth(), 0);
-		this.completeBorder(maze, maze.getWidth(),  maze.getHeight(), 1);
 		this.controlExit(maze);
 	}
 
@@ -141,28 +142,6 @@ class MazeGenerator {
 				maze.change(x, y - 1, MazeElement.PATH);
 			else
 				maze.change(x - 1, y, MazeElement.PATH);
-	}
-
-	/**
-	 * Complete the right or bottom border
-	 * @param maze 
-	 * @param currentBorder size of side to check
-	 * @param borderLength size of the border to complete
-	 * @param vertical 1 if working on vertical, 0 if not
-	 */
-	public void completeBorder(Maze maze, int currentBorder, int borderLength, int vertical) {
-		for (int i = 1; i < borderLength - 1 && currentBorder % 2 == 0; i++)
-			if (Math.random() > .5) {
-				if (vertical == 1 && !maze.isPath(currentBorder - 2, i)) { // working on right side
-					maze.change(currentBorder - 1, i);
-					maze.change(currentBorder - 2, i);
-				} 
-				else 
-					if (!maze.isPath(i, currentBorder - 2)) { // working on bottom side
-						maze.change(i, currentBorder - 1);
-						maze.change(i, currentBorder - 2);
-					} 
-			}	
 	}
 
 	/**
