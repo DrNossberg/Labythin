@@ -16,7 +16,7 @@ Create mazes recursively using the backtraking algorithme or iteratively using d
     
 ## Usage:
 ```bash
-    Labythin [-chmptvV] [-a[=<mode>]] [-s[=<step>]] [-o=FILE] width height
+Labythin [-chmptvV] [-a[=<mode>]] [-s[=<step>]] [-o=FILE] width height
 ```
 
 ### Parameters:
@@ -57,4 +57,5 @@ This program use the picocli librairy to parse the command line and write on the
 
 ## Authors:
 BERNARDONI Erin
+
 ORION Antoine
